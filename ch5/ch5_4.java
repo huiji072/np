@@ -15,7 +15,7 @@ public class ch5_4 {
 
 		System.out.println("호스트이름 또는 IP주소를 입력하세요.");
 		try {
-			if((hostname = br.readLine()) != null) {
+			if((hostname = br.readLine()) != null){
 				InetAddress addr = InetAddress.getByName(hostname);
 				addr2 = InetAddress.getByName(hostname2);
 //				equals

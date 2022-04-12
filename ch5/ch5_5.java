@@ -46,7 +46,7 @@ public class ch5_5 {
 			System.out.println("원격 호스트 IP : " + machine.getHostAddress());
 			System.out.println("운격 호스트 class : " + ipClass(machine.getAddress()));
 			System.out.println("원격 호스트 InetAddress" + machine.toString());
-		}catch(UnknownHostException e) {
+		} catch(UnknownHostException e) {
 			System.out.println(e);
 		}
 	}
