@@ -15,6 +15,7 @@ public class UDPEchoServer extends Thread{
 	
 	public void run() {
 		byte[] buffer = new byte[BUFFER_SIZE];
+		String retrivedData;
 		while(true) {
 			//수신용 데이터그램
 			DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
@@ -23,8 +24,8 @@ public class UDPEchoServer extends Thread{
 				 //데이터그램 수신
 				ds.receive(incoming);
 				//수신한 바이트 데이터를 문자열로 변환
-				String recData = new String(incoming.getData(),incoming.getOffset(), incoming.getLength());
-				System.out.println("문자열 : " + recData);
+				String recData = new String(incoming.getData(),incoming.getLength());
+				System.out.println(recData);
 				//송신용 데이터그램 생성
 				DatagramPacket outgoing = new DatagramPacket(incoming.getData(), incoming.getLength(),
 						incoming.getAddress(), incoming.getPort());
