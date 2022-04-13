@@ -1,4 +1,4 @@
-package test;
+package UDP;
 
 import java.awt.*;
 import java.awt.event.*;
