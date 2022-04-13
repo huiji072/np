@@ -75,8 +75,7 @@ public class ClientUDP extends Frame implements ActionListener{
 			byte data[] = s.getBytes();
 			sendPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), 5000);
 			socket.send(sendPacket);
-			display.append("패킷전송완료\n");
-			display.setText("");
+			display.append("패킷전송완료\n\n");
 		}catch(IOException e2) {
 			display.append(e2.toString() + "\n");
 			e2.printStackTrace();

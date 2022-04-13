@@ -48,8 +48,7 @@ public class ServerUDP extends Frame{
 						receivePacket.getPort()
 						);
 				socket.send(sendPacket);
-				display.append("패킷 전송 완료\n");
-				display.setText("");
+				display.append("패킷 전송 완료\n\n");
 			}catch(IOException io) {
 				display.append(io.toString() + "\n");
 				io.printStackTrace();
