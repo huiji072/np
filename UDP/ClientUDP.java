@@ -46,10 +46,6 @@ public class ClientUDP extends Frame implements ActionListener{
 				"\n메시지 길이 : " + receivePacket.getLength() +
 				"\n메시지 : " + new String(receivePacket.getData())
 						);
-				
-				//송신
-				DatagramPacket dp = new DatagramPacket(receivePacket.getData(), 0, receivePacket.getLength());
-				socket.send(dp); //보낸호스트에 다시 전송
 			
 		}catch(IOException e) {
 			display.append(e.toString() + "\n");
@@ -83,7 +79,7 @@ public class ClientUDP extends Frame implements ActionListener{
 		
 	}
 	class WinListener extends WindowAdapter{
-		public void WindowClosing(WindowEvent e) {
+		public void windowClosing(WindowEvent e) {
 			System.exit(0);
 		}
 	}

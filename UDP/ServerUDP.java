@@ -48,6 +48,8 @@ public class ServerUDP extends Frame{
 						receivePacket.getPort()
 						);
 				socket.send(sendPacket);
+
+				
 				display.append("패킷 전송 완료\n\n");
 			}catch(IOException io) {
 				display.append(io.toString() + "\n");
@@ -61,10 +63,10 @@ public class ServerUDP extends Frame{
 		s.waitForPacket();
 
 	}
-	class WinListener extends WindowAdapter{
-		public void WindowClosing(WindowEvent e) {
-			System.exit(0);
-		}
-	}
+	   class WinListener extends WindowAdapter{
+		      public void windowClosing(WindowEvent e){
+		         System.exit(0);
+		      }
+		   }
 
 }
