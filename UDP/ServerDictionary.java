@@ -12,14 +12,14 @@ public class ServerDictionary {
 	static InputStreamReader isr;
 	static BufferedReader br;
 	static BufferedReader socket_br;
-	static String[] dic = new String[10];
+	static String[] dic = new String[9];
 	public static void main(String[] args) {
 		
 		byte[] buffer = new byte[MAX_PACKET_SIZE];
 		try {
 			InetAddress server = InetAddress.getByName(hostname);
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length); //수신패킷
-			DatagramSocket socket = new DatagramSocket(PORT);
+			DatagramSocket socket = new DatagramSocket(10);
 			DatagramPacket kor_packet;
 			
 			//서버는 데이터그램 소켓을 만들고, 포트에 들어오는 패킷을 수신한다.
@@ -36,7 +36,7 @@ public class ServerDictionary {
 					isr = new InputStreamReader(fin);
 					br = new BufferedReader(isr);
 					int i = 0;
-					byte[] kor = new byte[100];
+					byte[] kor = null;
 					
 //					파일에 있는단어를 한줄씩 s1에
 					while((s1 = br.readLine()) != null) {
@@ -44,11 +44,14 @@ public class ServerDictionary {
 						dic[i] = s1; //apple 사과 banana 바나나
 						if(dic[i].equals(data)) {
 							System.out.println(dic[i-1]);
+							kor = dic[i-1].getBytes();
 						}
 						i++;
 					}
-//					kor_packet = new DatagramPacket(kor, kor.length, server, PORT);
-//					socket.send(kor_packet);
+					
+					//한글단어 보내기
+					kor_packet = new DatagramPacket(kor, kor.length, server, PORT);
+					socket.send(kor_packet);
 				}catch(IOException e) {
 					System.out.println(e);
 				}
