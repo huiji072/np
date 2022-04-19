@@ -16,11 +16,9 @@ public class exam_02 {
 			FileWriter fw = new FileWriter("Exam_02_1.txt");
 			
 			BufferedReader br = new BufferedReader(fin);
-			while((data=br.read())>-1) {
-				fw.write(data);
+			while((data=br.read(buffer))>-1) {
+				System.out.println(buffer);
 			}
-			fin.close();
-			fw.close();
 		}catch(Exception e) {
 			System.out.println(e);
 		}
