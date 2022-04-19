@@ -14,12 +14,15 @@ public class ClientUDP extends Frame implements ActionListener{
 	
 	public ClientUDP() {
 		super("클라이언트");
+		
 		enter = new TextField("메시지를 입력하세요");
 		enter.addActionListener(this);
 		add(enter, BorderLayout.NORTH);
+		
 		display = new TextArea();
 		add(display, BorderLayout.CENTER);
 		addWindowListener(new WinListener());
+		
 		setSize(400, 300);
 		setVisible(true);
 		
@@ -46,7 +49,16 @@ public class ClientUDP extends Frame implements ActionListener{
 				"\n메시지 길이 : " + receivePacket.getLength() +
 				"\n메시지 : " + new String(receivePacket.getData())
 						);
-			
+				display.append("\n\n서버 다시 전송(Echo data)...");
+//				sendPacket = new DatagramPacket(receivePacket.getData(),
+//						receivePacket.getLength(),
+//						receivePacket.getAddress(),
+//						receivePacket.getPort()
+//						);
+//				socket.send(sendPacket);
+
+				
+				display.append("패킷 전송 완료\n\n");
 		}catch(IOException e) {
 			display.append(e.toString() + "\n");
 			e.printStackTrace();
@@ -69,6 +81,7 @@ public class ClientUDP extends Frame implements ActionListener{
 			display.append("\n송신 메시지 : " + e.getActionCommand() + "\n");
 			String s = e.getActionCommand();
 			byte data[] = s.getBytes();
+			
 			sendPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), 5000);
 			socket.send(sendPacket);
 			display.append("패킷전송완료\n\n");
