@@ -46,32 +46,76 @@ public class QuizeServer extends Thread{
 				quest1 = input.readLine();
 				if(quest1.equals("y")) { //y선택 - 퀴즈시작o
 					
-					System.out.println("애플의 스마트폰 운영체제 이름은? ");
-					answer1 = input.readLine();
+					System.out.println("사과는 영어로?");//q1
+					answer1 = input.readLine(); 
 					
-					if(answer1.equals("ios")) { //ios - 정답o - 계속?
-						System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); 
-						quest2 = input.readLine();
+					if(answer1.equals("apple")) { //q1 - 정답o - 계속?
+						System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //q1 o
+						quest2 = input.readLine(); //y
 						
-						if(quest2.equals("y")) { //ios - 정답0 - 계속o
-							System.out.println("구글의 스마트폰 운영체제 이름은?");
-							quest3 = input.readLine();
+						if(quest2.equals("y")) { //q1 - 정답0 - 계속o
+							System.out.println("바나나는 영어로?"); //q2
+							answer2 = input.readLine();
 							
-							if(quest3.equals("android")) { // android - 정답o
-								System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //android 정답 - 계속?
-								no1 = input.readLine();
+							if(answer2.equals("banana")) { // q2 o
+								System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //q2 정답 - 계속?
+								quest4 = input.readLine();
 								
-								if(no1.equals("n")){ //android 정답 - 계속x
-									System.out.println("quit");
-									System.exit(0);
+								if(quest4.equals("y")) {
+									System.out.println("포도는 영어로?"); // q1
+									answer3 = input.readLine();
+									
+									if(answer3.equals("grape")) {
+										System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //q2 정답 - 계속?
+										no3 = input.readLine();
+										
+										if(no3.equals("n")){ //q3 정답 - 계속x
+											System.out.println("quit");
+											System.exit(0);
+										}
+									}
+									
+										
+									
 								}
 							}else {
-								System.out.println("오답입니다. 계속하시겠습니까?(y/n)"); //android 오답 - 계속?
+								System.out.println("오답입니다. 계속하시겠습니까?(y/n)"); //q2 오답 - 계속?
 								no2 = input.readLine();
-								if(no2.equals("n")){ //android 오답 - 계속x
+								if(no2.equals("n")){ //q2 오답 - 계속x
 									System.out.println("quit");
 									System.exit(0);
+								}else {
+									System.out.println("바나나를 영어로?");
+									answer2 = input.readLine();
+									
+									if(answer2.equals("banana")) { // q2 - 정답o
+										System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //q2 정답 - 계속?
+										no1 = input.readLine();
+										
+										if(no1.equals("n")){ //q2 정답 - 계속x
+											System.out.println("quit");
+											System.exit(0);
+										}
+										else {
+											System.out.println("포도를 영어로?");
+											answer3 = input.readLine();
+											
+											if(answer3.equals("grape")) {
+												System.out.println("정답입니다. 계속하시겠습니까?(y/n)");
+												no3 = input.readLine();
+
+												if(no3.equals("n")){ 
+													System.out.println("quit");
+													System.exit(0);
+												}
+											}else {
+												System.out.println("quit");
+												System.exit(0);
+											}
+										}
+									}
 								}
+								
 							}
 						}else if(quest2.equals("n")){ //ios - 정답o - 계속x
 							System.out.println("quit");
@@ -79,31 +123,36 @@ public class QuizeServer extends Thread{
 						}
 						
 					}else {
-						System.out.println("오답입니다. 계속하시겠습니까?(y/n)"); //ios - 오답 - 계속?
+						System.out.println("오답입니다. 계속하시겠습니까?(y/n)"); //q1 - 오답 - 계속?
 						no3 = input.readLine();
 						
-						if(no3.equals("y")) { //ios - 오답 - 계속o
-							System.out.println("구글의 스마트폰 운영체제 이름은?");
-							quest3 = input.readLine();
+						if(no3.equals("y")) { //q1 - 오답 - 계속o
+							System.out.println("바나나를 영어로?");
+							answer2 = input.readLine();
 							
-							if(quest3.equals("android")) { // android - 정답o
-								System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //android 정답 - 계속?
+							if(answer2.equals("banana")) { // q2 - 정답o
+								System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //q2 정답 - 계속?
 								no1 = input.readLine();
 								
-								if(no1.equals("n")){ //android 정답 - 계속x
+								if(no1.equals("n")){ //q2 정답 - 계속x
 									System.out.println("quit");
 									System.exit(0);
 								}
-							}else {
-								System.out.println("오답입니다. 계속하시겠습니까?(y/n)"); //android 오답 - 계속?
+							}
+							
+							else {
+								System.out.println("오답입니다. 계속하시겠습니까?(y/n)"); //q2 오답 - 계속?
 								no2 = input.readLine();
+								
 								if(no2.equals("n")){ //android 오답 - 계속x
 									System.out.println("quit");
 									System.exit(0);
 								}
 							}
+							
+							
 						}
-						if(no3.equals("n")){ //ios - 오답 - 계속x
+						if(no3.equals("n")){ //q1 - 오답 - 계속x
 							System.out.println("quit");
 							System.exit(0);
 						}
