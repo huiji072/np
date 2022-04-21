@@ -34,8 +34,10 @@ public class QuizeServer extends Thread{
 				String quest1;
 				String quest2;
 				String quest3;
+				String quest4;
 				String answer1;
 				String answer2;
+				String answer3;
 				String no1;
 				String no2;
 				String no3;
@@ -43,17 +45,22 @@ public class QuizeServer extends Thread{
 				System.out.println("퀴즈를 시작합니다.(y/n)");
 				quest1 = input.readLine();
 				if(quest1.equals("y")) { //y선택 - 퀴즈시작o
+					
 					System.out.println("애플의 스마트폰 운영체제 이름은? ");
 					answer1 = input.readLine();
+					
 					if(answer1.equals("ios")) { //ios - 정답o - 계속?
 						System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); 
 						quest2 = input.readLine();
+						
 						if(quest2.equals("y")) { //ios - 정답0 - 계속o
 							System.out.println("구글의 스마트폰 운영체제 이름은?");
 							quest3 = input.readLine();
+							
 							if(quest3.equals("android")) { // android - 정답o
 								System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //android 정답 - 계속?
 								no1 = input.readLine();
+								
 								if(no1.equals("n")){ //android 정답 - 계속x
 									System.out.println("quit");
 									System.exit(0);
@@ -74,12 +81,15 @@ public class QuizeServer extends Thread{
 					}else {
 						System.out.println("오답입니다. 계속하시겠습니까?(y/n)"); //ios - 오답 - 계속?
 						no3 = input.readLine();
+						
 						if(no3.equals("y")) { //ios - 오답 - 계속o
 							System.out.println("구글의 스마트폰 운영체제 이름은?");
 							quest3 = input.readLine();
+							
 							if(quest3.equals("android")) { // android - 정답o
 								System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //android 정답 - 계속?
 								no1 = input.readLine();
+								
 								if(no1.equals("n")){ //android 정답 - 계속x
 									System.out.println("quit");
 									System.exit(0);

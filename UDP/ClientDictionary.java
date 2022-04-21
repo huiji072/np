@@ -38,7 +38,7 @@ public class ClientDictionary {
 				theSocket.send(packet); //단어 전송
 				
 
-				receive = new DatagramPacket(buffer,0, buffer.length); 
+				receive = new DatagramPacket(buffer,0, buffer.length);
 				theSocket.receive(receive);//클라이언트 패킷 받고
 				String kor = new String(receive.getData(), receive.getOffset(), receive.getLength());
 				System.out.println("한글 : " + kor); //한글출력
