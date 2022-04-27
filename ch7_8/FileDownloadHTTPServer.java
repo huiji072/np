@@ -10,20 +10,11 @@ public class FileDownloadHTTPServer {
 //		byte[] content;
 //		byte[] header;
  		int b, port;
- 		byte[] data;
+ 		byte[] data = null;
 		String contenttype = "text/plain";
 		
 		try {
-			if(args[0].endsWith(".html") || args[0].endsWith(".htm")) {
-				contenttype = "text/html";
-			}
-			
-			FileInputStream in = new FileInputStream(args[0]);
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			
-			while((b = in.read()) != -1)
-				out.write(b); //배열 버퍼에 저장한다.
-			data = out.toByteArray(); //바이트 데이터로 변환한다.
+
 			
 			try {
 				port = Integer.parseInt(args[1]);
@@ -65,13 +56,14 @@ class FileDownload extends Thread{
 	Socket connection;
 	BufferedOutputStream out;
 	BufferedInputStream in;
+	int b;
+	byte[] data;
 		
 	public FileDownload(Socket connection, byte[] data, String MIMEType, int port) throws UnsupportedEncodingException{
 	      this.connection = connection;
 	      this.content = data;
 	      this.port = port;
-	      String header = "HTTP 1.0 200 OK\r\n"+"Server: OneFile 1.0\r\n"+"Content-length: "+this.content.length+"\r\n"+"Content-type: "+MIMEType+"\r\n\r\n"; 
-	      this.header = header.getBytes("ASCII");
+	      this.contenttype = MIMEType;
 		
 	}
 	
@@ -92,6 +84,20 @@ class FileDownload extends Thread{
 			
 			//클라이언트의 요청 메시지로서 [GET/HTTP/1.1] 출력
 			System.out.println(request.toString());
+			
+			String[] s = new String(request).split("/");
+			System.out.println(s[0]);
+			//위에 try문에서
+			if(s[0].endsWith(".html") || s[0].endsWith(".htm")) {
+				contenttype = "text/html";
+			}
+			
+			FileInputStream in = new FileInputStream(s[0]);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			
+			while((b = in.read()) != -1)
+				out.write(b); //배열 버퍼에 저장한다.
+			data = out.toByteArray(); //바이트 데이터로 변환한다.
 			
 			if(request.toString().indexOf("HTTP/") != -1) {
 				out.write(this.header);
