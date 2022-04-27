@@ -92,7 +92,7 @@ public class QuizeServer extends Thread{
 										System.out.println("정답입니다. 계속하시겠습니까?(y/n)"); //q2 정답 - 계속?
 										no1 = input.readLine();
 										
-										if(no1.equals("n")){ //q2 정답 - 계속x
+										if(no1.equals("y")){ //q2 정답 - 계속x
 											System.out.println("quit");
 											System.exit(0);
 										}
@@ -117,7 +117,7 @@ public class QuizeServer extends Thread{
 								}
 								
 							}
-						}else if(quest2.equals("n")){ //ios - 정답o - 계속x
+						}else if(quest2.equals("n")){ //q1 o 
 							System.out.println("quit");
 							System.exit(0);
 						}
