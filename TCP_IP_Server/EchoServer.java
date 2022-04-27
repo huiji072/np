@@ -45,7 +45,7 @@ public class EchoServer {
 				try {
 					theSocket.close();
 				}catch(IOException e) {
-					System.out.println(e	);
+					System.out.println(e);
 				}
 			}
 		}
