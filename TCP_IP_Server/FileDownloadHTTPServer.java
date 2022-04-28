@@ -11,7 +11,7 @@ public class FileDownloadHTTPServer {
 		byte[] header;
  		int b, port;
 		byte[] data;
-		String encoding =  "ASCII";
+//		String encoding =  "ASCII"; 
 		String contenttype = "text/plain";
 		
 		try {
@@ -33,8 +33,8 @@ public class FileDownloadHTTPServer {
 			}catch(Exception e) {
 				port = 80;
 			}
-			if(args.length > 2)
-				encoding = args[2];
+//			if(args.length > 2)
+//				encoding = args[2];
 			
 			ServerSocket server = new ServerSocket(port);
 			
