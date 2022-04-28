@@ -1,0 +1,215 @@
+[33mcommit d6273192c8872416bbdf7a130ffca16d9e548306[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Fri Apr 29 02:31:28 2022 +0900
+
+    encoding delete
+
+[33mcommit fde579b80d2e8977e41f3dd8eb9dcc67f121abda[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Wed Apr 27 19:30:35 2022 +0900
+
+    ch2 test2
+
+[33mcommit 1bfd00be38700ddb06596ef78480f175b5dbf635[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Wed Apr 27 19:14:21 2022 +0900
+
+    ch3 test1
+
+[33mcommit 523cd607b23b128b1519cd937c5bd73caeb38b4e[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Wed Apr 27 18:57:18 2022 +0900
+
+    FileDownloadHTTPServer test1
+
+[33mcommit ed07a9f4a2aff0d8bbeb173e2f152a8573124b37[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Wed Apr 27 18:11:47 2022 +0900
+
+    과제 1
+
+[33mcommit 927518baef54ac00c61cab61a79ec393b3cebedd[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Wed Apr 27 11:45:53 2022 +0900
+
+    tcp 예제 끝
+
+[33mcommit 639ae50cf8965c9b78d45e66e279c4b64cd60066[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Wed Apr 27 11:38:59 2022 +0900
+
+    fileDownloadHTTPServer error
+
+[33mcommit e94b8bc683c8314aecc866d1ea740559ab048f8a[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Wed Apr 27 09:45:34 2022 +0900
+
+    echoServer success
+
+[33mcommit 5c078cd06f9817110d21736762b67560e00e39c0[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Wed Apr 27 09:00:52 2022 +0900
+
+    tcp/ip test1
+
+[33mcommit 3c612d56b1f9ec56b88b5dccbaa269c6c00ed231[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Thu Apr 21 19:19:15 2022 +0900
+
+    quest success
+
+[33mcommit f8a635923149d4a80ef29713a906dd4eac09ef39[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Thu Apr 21 18:41:31 2022 +0900
+
+    qeustion retry
+
+[33mcommit 010edb6bdf6682043e00eef3c915605f1b7c2fdb[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Tue Apr 19 23:25:43 2022 +0900
+
+    2번 성공
+
+[33mcommit e75ce1c2a99049cb8694d7d05869dc33d9bcea82[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Tue Apr 19 22:34:08 2022 +0900
+
+    한글 client->server 전까지
+
+[33mcommit 63f433564a6327c8af67d2fd8a2fb86a00693485[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Tue Apr 19 19:00:21 2022 +0900
+
+    test
+
+[33mcommit 642a28df7b06b08d1d62043edd5ea504c8a57c52[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Tue Apr 19 18:59:41 2022 +0900
+
+    과제1qjs
+
+[33mcommit 4bf5e5517d2be4c5e1c9b72c160cc879892ec7ac[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Mon Apr 18 20:20:08 2022 +0900
+
+    test
+
+[33mcommit d539a7e3d5f1d0fa59d6c1d17135e2bb38d17683[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Mon Apr 18 11:56:25 2022 +0900
+
+    test
+
+[33mcommit 88bee714fb5574086a39c9f6d2275d7bc0712ba6[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Thu Apr 14 18:01:38 2022 +0900
+
+    ch4 once  success
+
+[33mcommit d296612377bd5c03eb81dbe1e227de283b890ca6[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Thu Apr 14 14:43:18 2022 +0900
+
+    test start
+
+[33mcommit bb785a06d9b00b92a355c50a2809f859b59cf6d9[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Wed Apr 13 20:49:15 2022 +0900
+
+    UDP packet add
+
+[33mcommit c5d224538607737c544f5d36b53470f912f25d04[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Wed Apr 13 20:47:30 2022 +0900
+
+    quize success
+
+[33mcommit e3bbab51dd4460954faaf112e61774823425d5db[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Wed Apr 13 19:50:09 2022 +0900
+
+    과제
+
+[33mcommit 3e69260201aca4b71044291bc844fc46957f2567[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Wed Apr 13 13:07:16 2022 +0900
+
+    .
+
+[33mcommit 29ec75f654836f6456b7c8157c69247aa7aea384[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Wed Apr 13 11:19:33 2022 +0900
+
+    ch3 start
+
+[33mcommit 173e8dff249b1ae37447a06ab6c2b2bfb9701135[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Wed Apr 13 08:09:47 2022 +0900
+
+    test
+
+[33mcommit bd0d3d5d2ef11f26647432d6d776be0c0c65fcf6[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Tue Apr 12 21:13:55 2022 +0900
+
+    add
+
+[33mcommit 8b6f08e073917a4c6933de5a4e40463a847f01c3[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Tue Apr 12 21:13:34 2022 +0900
+
+    ch11
+
+[33mcommit 1f1a2c57f100829ebf733117c3806165ff3ae5d6[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Tue Apr 12 17:09:28 2022 +0900
+
+    all
+
+[33mcommit c4295838d3eaa99d4cab6faeb6c83df17a940550[m
+Author: huiji0720 <fmti0720@gmail.com>
+Date:   Tue Apr 12 11:06:02 2022 +0900
+
+    ch4add
+
+[33mcommit d2e97cedc6659973e67f4e3afaffd572c5c70503[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Mon Apr 11 20:58:46 2022 +0900
+
+    h
+
+[33mcommit e8dcbf1bed3104f20d7011dea3dfde45903d1edf[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Mon Apr 11 20:56:10 2022 +0900
+
+    6-1
+
+[33mcommit 34d1d9a38d39f7cdb4fc37466bb679aafc791de8[m
+Author: huiji072 <fmti0720@gmail.com>
+Date:   Mon Apr 11 20:54:52 2022 +0900
+
+    ch6_1
+
+[33mcommit 3b3aec7070cc1880b37e6e6ee90f0990e774044b[m
+Author: huiji <fmti0720@gmail.com>
+Date:   Mon Apr 11 18:12:29 2022 +0900
+
+    ch5_5
+
+[33mcommit 805bc641d975a86b04f8d46d6780adfc76abe2eb[m
+Author: huiji <fmti0720@gmail.com>
+Date:   Mon Apr 11 17:53:59 2022 +0900
+
+    ch5_4-add
+
+[33mcommit 83bdcf7148c3f51ab9c63e856ecfc831dfd56621[m
+Author: huiji <fmti0720@gmail.com>
+Date:   Mon Apr 11 17:43:26 2022 +0900
+
+    testch5
+
+[33mcommit a06626f3122989be26472625a76705bd12060656[m
+Author: huiji <fmti0720@gmail.com>
+Date:   Mon Apr 11 17:41:28 2022 +0900
+
+    test
