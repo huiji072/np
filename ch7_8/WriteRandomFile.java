@@ -1,6 +1,7 @@
 package ch7_8;
 
 import java.io.*;
+import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -10,6 +11,14 @@ public class WriteRandomFile extends Frame implements ActionListener{
 	private Button enter, find, delete, clear; //입력 조회 삭제 close
 	private RandomAccessFile output;
 	private Record data;
+	Socket theSocket;
+	int port = 5000;
+	String host = "localhost";
+	InputStream is;
+	BufferedReader reader;
+	OutputStream os;
+	BufferedWriter writer;
+	String theLine;
 	
 	public WriteRandomFile() {
 		super("파일쓰기");
@@ -55,6 +64,7 @@ public class WriteRandomFile extends Frame implements ActionListener{
 		
 		addWindowListener(new WinListener());
 		setVisible(true);
+	
 		
 	}
 	
@@ -62,17 +72,35 @@ public class WriteRandomFile extends Frame implements ActionListener{
 		int accountNo = 0;
 		Double d;
 		
-		
 		if( !accountField.getText().equals("")) {
 			try {
+				
+				//서버에 접속
+				theSocket = new Socket(host, port);
+				
+				is = theSocket.getInputStream();
+				reader = new BufferedReader(new InputStreamReader(is));
+				
+				os = theSocket.getOutputStream();
+				writer = new BufferedWriter(new OutputStreamWriter(os));
+
 				accountNo = Integer.parseInt(accountField.getText());
+					
 				if(accountNo > 0 && accountNo <= 100) {
 					data.setAccount(accountNo);
 					data.setName(nameField.getText());
 					d = new Double(balanceField.getText());
 					data.setBalance(d.doubleValue());
+
 					output.seek((long) (accountNo-1) * Record.size()); 
 					data.write(output);
+					
+					while(true) {
+						writer.write(accountNo+"\r"+nameField.getText()+"\r" + d.doubleValue()+"\r\n");
+						writer.flush();
+//						System.out.println(accountNo+"\r\n");
+					}
+					
 				}else {
 					try {
 						Exception e = new Exception("account is 100 or less.\n");
@@ -82,13 +110,16 @@ public class WriteRandomFile extends Frame implements ActionListener{
 					}
 				}
 				
+
+
 				
 			}catch(NumberFormatException nfe) {
 				System.err.println("숫자를 입력하세요");
 			}catch(IOException io) {
 				System.err.println("파일 쓰기 에러\n" + io.toString());
 				System.exit(1);
-			}	
+			}
+			
 		}
 	}
 	
@@ -146,7 +177,7 @@ public class WriteRandomFile extends Frame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == enter) {
-			addRecord(); 
+			addRecord();
 		}else if(e.getSource() == find){
 			findRecord();
 		}else if(e.getSource() == delete) {
@@ -157,7 +188,8 @@ public class WriteRandomFile extends Frame implements ActionListener{
 	}
 
 	public static void main(String[] args) {
-		new WriteRandomFile();
+		WriteRandomFile client = new WriteRandomFile();
+		
 		
 	}
 
@@ -167,6 +199,15 @@ class Record{
 	private int account;
 	private String name;
 	private double balance;
+//	Socket theSocket;
+//	int port = 5000;
+//	String host = "localhost";
+//	InputStream is;
+//	BufferedReader reader;
+//	OutputStream os;
+//	BufferedWriter writer;
+//	String theLine;
+
 	
 	//RandomAccessFile로부터 한 레코드를 읽는다.
 	public void read(RandomAccessFile file) throws IOException{
@@ -176,6 +217,9 @@ class Record{
 			namearray[i] = file.readChar();
 		name = new String(namearray);
 		balance = file.readDouble();
+		
+	
+		
 	}
 	
 	//RandoeAccessFile에 한 레코드를 저장한다.
@@ -189,6 +233,8 @@ class Record{
 		buf.setLength(15);
 		file.writeChars(buf.toString());
 		file.writeDouble(balance);
+
+		
 	}
 	
 	public void setAccount(int a) {account = a;}
