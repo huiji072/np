@@ -35,7 +35,7 @@ public class ServerFile {
 			
 			//클라이언트의 데이터 수신
 			while((str = reader.readLine()) != null) {	
-				System.out.println(str);
+				System.out.println(str+"\r\n");
 				writer.write(str+'\r'+'\n'); //클라이언트에 데이터 재전송
 				writer.flush();
 			}
