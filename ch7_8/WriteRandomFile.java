@@ -147,8 +147,7 @@ public class WriteRandomFile extends Frame implements ActionListener{
 		
 		if(e.getSource() == enter) {
 			addRecord(); 
-		}
-		else if(e.getSource() == find){
+		}else if(e.getSource() == find){
 			findRecord();
 		}else if(e.getSource() == delete) {
 			deleteRecord();
