@@ -14,12 +14,12 @@ public class ServerFile {
 		BufferedReader reader;
 		OutputStream os;
 		BufferedWriter writer;
-		String accountField, nameField, balanceField;	
+		String s;	
 		String str;
 		
 
 		
-		try {
+		try {	
 			//서버 소켓 생성
 			theServer = new ServerSocket(port);
 			System.out.println("클라이언트의 접속 요청을 기다립니다.");
@@ -32,14 +32,13 @@ public class ServerFile {
 			//클라이언트에 데이터를 전송할 객체
 			os = theSocket.getOutputStream();
 			writer = new BufferedWriter(new OutputStreamWriter(os));
-			
+
 			//클라이언트의 데이터 수신
-			while((str = reader.readLine()) != null) {	
-				System.out.println(str+"\r\n");
+			while((str = reader.readLine()) != null) {
+				System.out.println(str);
 				writer.write(str+'\r'+'\n'); //클라이언트에 데이터 재전송
 				writer.flush();
 			}
-			
 			theSocket.close();
 		}catch(IOException e) {
 			System.out.println(e);

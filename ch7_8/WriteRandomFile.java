@@ -95,11 +95,11 @@ public class WriteRandomFile extends Frame implements ActionListener{
 					output.seek((long) (accountNo-1) * Record.size()); 
 					data.write(output);
 					
-					
-						writer.write(accountNo+"\r"+nameField.getText()+"\r" + d.doubleValue()+"\r\n");
+					while(true) {
+						writer.write(accountNo+" "+nameField.getText()+" " + d.doubleValue()+"\r\n");
 						writer.flush();
 //						System.out.println(accountNo+"\r\n");
-					
+					}
 					
 				}else {
 					try {

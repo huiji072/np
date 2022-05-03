@@ -13,14 +13,16 @@ public class FileDownloadHTTPServer {
 		int b, port;
 		byte[] data;
 		String contenttype = "text/plain";
+		Socket theSocket = null;
+		
 		
 		try {
-			if(args[0].endsWith(".html") || args[0].endsWith(".htm")) {
-				contenttype = "text/html";
-			}
+//			if(args[0].endsWith(".html") || args[0].endsWith(".htm")) {
+//				contenttype = "text/html";
+//			}
 			
 			//이걸 이제 웹페이지에서 받아와야 함
-			FileInputStream in = new FileInputStream(args[0]);
+			FileInputStream in = new FileInputStream("file.txt");
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			
 			//파일 읽음
@@ -37,7 +39,6 @@ public class FileDownloadHTTPServer {
 			}catch(Exception e) {
 				port = 80;
 			}
-			
 			ServerSocket server = new ServerSocket(port);
 			
 			while(true) {
