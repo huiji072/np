@@ -44,27 +44,16 @@ public class server extends Frame implements ActionListener{
 		ServerSocket server;
 		try {
 			server = new ServerSocket(5000, 100);
+			ServerThread SThread = null;
 			connection = server.accept();
-			
-			InputStream is = connection.getInputStream();
-			InputStreamReader isr = new InputStreamReader(is);
-			input = new BufferedReader(isr);
+			SThread = new ServerThread(connection, display);
+			SThread.start();
+
 			OutputStream os = connection.getOutputStream();
 			OutputStreamWriter osw = new OutputStreamWriter(os);
 			output = new BufferedWriter(osw);
 			
-			while(true) {
-				String clientdata = input.readLine();
-				if(clientdata.equals("quit")) {
-					display.append("\n 클라이언트와의 접속이 중단되었습니다.");
-					output.flush();
-					break;
-				}else {
-					display.append("\n클라이언트 메시지 :  " + clientdata);
-					output.flush();
-				}
-			}
-			connection.close();
+
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -101,4 +90,43 @@ public class server extends Frame implements ActionListener{
 		}
 	}
 
+}
+
+class ServerThread extends Thread{
+	BufferedWriter output;
+	BufferedReader input;
+	Socket connection;
+	TextArea display;
+	ServerThread(Socket socket, TextArea ta){
+		this.connection = socket;
+		display = ta;
+	}
+
+	public void run() {
+		try {
+			InputStream is = connection.getInputStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			input = new BufferedReader(isr);
+			OutputStream os = connection.getOutputStream();
+			OutputStreamWriter osw = new OutputStreamWriter(os);
+			output = new BufferedWriter(osw);
+			
+			while(true) {
+				String clientdata = input.readLine();
+				if(clientdata.equals("quit")) {
+					display.append("\n 클라이언트와의 접속이 중단되었습니다.");
+					output.flush();
+					break;
+				}else {
+					display.append("\n클라이언트 메시지 :  " + clientdata);
+					output.flush();
+				}
+			}
+			connection.close();
+			
+		}catch(IOException e) {
+			System.out.println(e);
+		}
+
+	}
 }
