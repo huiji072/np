@@ -78,39 +78,41 @@ public class client extends Frame implements ActionListener{
 			text.setText("");
 			if(clientdata.equals("quit")) {
 				client.close();
+				//재접속 버튼을 눌렀을 때
+				if(ae.getSource() == reconn) {
+					try {
+						client = new Socket(InetAddress.getLocalHost(), 5000);
+						input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+						output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+						
+						while(true) {
+							String serverdata = input.readLine();
+							if(serverdata.equals("quit")) {
+								display.append("\n서버와의 접속이 중단되었습니다.");
+								output.flush();
+								break;
+							}else {
+								display.append("\n서버 메시지 : " + serverdata);
+								output.flush();
+							}
+							
+						}
+					}catch(IOException e) {
+						e.printStackTrace();
+					}
+					try {
+						client.close();
+					}catch(IOException e) {
+						System.out.println(e);
+					}
+
+				}
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
 		
-		//재접속 버튼을 눌렀을 때
-		if(ae.getSource() == reconn) {
-			try {
-				client = new Socket(InetAddress.getLocalHost(), 5000);
-				input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-				
-				while(true) {
-					String serverdata = input.readLine();
-					if(serverdata.equals("quit")) {
-						display.append("\n서버와의 접속이 중단되었습니다.");
-						output.flush();
-						break;
-					}else {
-						display.append("\n서버 메시지 : " + serverdata);
-						output.flush();
-					}
-					
-				}
-			}catch(IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				client.close();
-			}catch(IOException e) {
-				System.out.println(e);
-			}
-		}
+
 			
 
 		
