@@ -27,7 +27,7 @@ public class client extends Frame implements ActionListener{
 		text = new TextField(30);
 		reconn = new Button("재접속");
 		text.addActionListener(this);
-		reconn.addActionListener(this);
+//		reconn.addActionListener(this);
 		pword.add(lword, BorderLayout.WEST);
 		pword.add(text, BorderLayout.CENTER);
 		pword.add(reconn, BorderLayout.EAST);
@@ -50,6 +50,7 @@ public class client extends Frame implements ActionListener{
 				if(serverdata.equals("quit")) {
 					display.append("\n서버와의 접속이 중단되었습니다.");
 					output.flush();
+					reconn.addActionListener(this);
 					break;
 				}else {
 					display.append("\n서버 메시지 : " + serverdata);
@@ -68,25 +69,8 @@ public class client extends Frame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent ae) {
-		
-		clientdata = text.getText();
-		try {
-			display.append("\n클라이언트 : " + clientdata);
-			output.write(clientdata + "\r\n");
-			output.flush();
-			
-			text.setText("");
-			if(clientdata.equals("quit")) {
-				
-				client.close();
-			}
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-		
 		//재접속 버튼을 눌렀을 때
 		if(ae.getSource() == reconn) {
-			
 			try {
 				client = new Socket(InetAddress.getLocalHost(), 5000);
 				input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -112,8 +96,39 @@ public class client extends Frame implements ActionListener{
 			}catch(IOException e) {
 				System.out.println(e);
 			}
-
+			//클라이언트 값 출력, 서버에 보내기
+			clientdata = text.getText();
+			try {
+				display.append("\n클라이언트 : " + clientdata);
+				output.write(clientdata + "\r\n");
+				output.flush();
+				
+				text.setText("");
+				if(clientdata.equals("quit")) {
+					
+					client.close();
+				}
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
+		
+		//클라이언트 값 출력, 서버에 보내기
+		clientdata = text.getText();
+		try {
+			display.append("\n클라이언트 : " + clientdata);
+			output.write(clientdata + "\r\n");
+			output.flush();
+			
+			text.setText("");
+			if(clientdata.equals("quit")) {
+				
+				client.close();
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 			
 
 		
