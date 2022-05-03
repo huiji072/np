@@ -14,7 +14,7 @@ public class client extends Frame implements ActionListener{
 	BufferedReader input;
 	Socket client;
 	String clientdata = "";
-	Button reconn;
+//	Button reconn;
 	
 	public client() {
 		super("클라이언트");
@@ -25,11 +25,11 @@ public class client extends Frame implements ActionListener{
 		Panel pword = new Panel(new BorderLayout());
 		lword = new Label("대화말");
 		text = new TextField(30);
-		reconn = new Button("재접속");
+//		reconn = new Button("재접속");
 		text.addActionListener(this);
 		pword.add(lword, BorderLayout.WEST);
 		pword.add(text, BorderLayout.CENTER);
-		pword.add(reconn, BorderLayout.EAST);
+//		pword.add(reconn, BorderLayout.EAST);
 		add(pword, BorderLayout.SOUTH);
 		
 		addWindowListener(new WinListener());
@@ -55,9 +55,13 @@ public class client extends Frame implements ActionListener{
 					output.flush();
 				}
 			}
-			client.close();
 		}catch(IOException e) {
 			e.printStackTrace();
+		}
+		try {
+			client.close();
+		}catch(IOException e) {
+			System.out.println(e);
 		}
 	}
 	
