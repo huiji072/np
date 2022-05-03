@@ -14,7 +14,7 @@ public class client extends Frame implements ActionListener{
 	BufferedReader input;
 	Socket client;
 	String clientdata = "";
-//	Button reconn;
+	Button reconn;
 	
 	public client() {
 		super("클라이언트");
@@ -25,11 +25,12 @@ public class client extends Frame implements ActionListener{
 		Panel pword = new Panel(new BorderLayout());
 		lword = new Label("대화말");
 		text = new TextField(30);
-//		reconn = new Button("재접속");
+		reconn = new Button("재접속");
 		text.addActionListener(this);
+		reconn.addActionListener(this);
 		pword.add(lword, BorderLayout.WEST);
 		pword.add(text, BorderLayout.CENTER);
-//		pword.add(reconn, BorderLayout.EAST);
+		pword.add(reconn, BorderLayout.EAST);
 		add(pword, BorderLayout.SOUTH);
 		
 		addWindowListener(new WinListener());
@@ -54,6 +55,7 @@ public class client extends Frame implements ActionListener{
 					display.append("\n서버 메시지 : " + serverdata);
 					output.flush();
 				}
+				
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
@@ -66,6 +68,7 @@ public class client extends Frame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent ae) {
+		
 		clientdata = text.getText();
 		try {
 			display.append("\n클라이언트 : " + clientdata);
@@ -79,6 +82,38 @@ public class client extends Frame implements ActionListener{
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+		
+		//재접속 버튼을 눌렀을 때
+		if(ae.getSource() == reconn) {
+			try {
+				client = new Socket(InetAddress.getLocalHost(), 5000);
+				input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+				output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+				
+				while(true) {
+					String serverdata = input.readLine();
+					if(serverdata.equals("quit")) {
+						display.append("\n서버와의 접속이 중단되었습니다.");
+						output.flush();
+						break;
+					}else {
+						display.append("\n서버 메시지 : " + serverdata);
+						output.flush();
+					}
+					
+				}
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				client.close();
+			}catch(IOException e) {
+				System.out.println(e);
+			}
+		}
+			
+
+		
 	}
 
 	public static void main(String[] args) {
