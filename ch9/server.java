@@ -43,13 +43,13 @@ public class server extends Frame implements ActionListener{
 	public void runServer() {
 		ServerSocket server;
 		try {
-			list = new ArrayList<ServerThread>();
+//			list = new ArrayList<ServerThread>();
 			server = new ServerSocket(5000, 100);
 			try {
 				while(true) {
 					ServerThread SThread = null;
-					connection = server.accept();
-					SThread = new ServerThread(this, connection, display);
+					connection = server.accept();//접속요청이 올 때까지 기다린다.
+					SThread = new ServerThread(connection, display);
 					SThread.start();
 					display.setText(connection.getInetAddress().getHostName() + " 서버는 클라이언트와 연결됨");
 					OutputStream os = connection.getOutputStream();
@@ -68,6 +68,8 @@ public class server extends Frame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent ae) {
+
+		
 		serverdata = text.getText();
 		try {
 			display.append("\n서버 : " + serverdata);
@@ -104,10 +106,10 @@ class ServerThread extends Thread{
 	Socket connection;
 	server sv;
 	TextArea display;
-	ServerThread(server s, Socket socket, TextArea ta){
+	ServerThread(Socket socket, TextArea ta){
 		this.connection = socket;
 		display = ta;
-		sv = s;
+//		sv = s;
 	}
 
 	public void run() {
@@ -127,24 +129,24 @@ class ServerThread extends Thread{
 					break;
 				}else {
 					display.append("\n클라이언트 메시지 :  " + clientdata);
-					int cnt = sv.list.size();
-					for(int i=0;i<cnt;i++) {
-						ServerThread SThread = (ServerThread)sv.list.get(i);
-						SThread.output.write(clientdata+"\r\n");
-						SThread.output.flush();
-					}
+//					int cnt = sv.list.size();
+//					for(int i=0;i<cnt;i++) {
+//						ServerThread SThread = (ServerThread)sv.list.get(i);
+//						SThread.output.write(clientdata+"\r\n");
+//						SThread.output.flush();
+//					}
 					output.flush();
 				}
 			}
-			
-		}catch(IOException e) {
-			System.out.println(e);
-		}
-		sv.list.remove(this);
-		try {
 			connection.close();
 		}catch(IOException e) {
 			System.out.println(e);
 		}
+		sv.list.remove(this);
+//		try {
+//			connection.close();
+//		}catch(IOException e) {
+//			System.out.println(e);
+//		}
 	}
 }
