@@ -105,14 +105,16 @@ class ServerThread extends Thread{
 	public void run() {
 		cs.list.add(this); //list에 값 추가
 		String clientdata;
-
+		StringTokenizer st;
+		
 		try {
 			while((clientdata = input.readLine()) != null) {
+				st = new StringTokenizer(clientdata, ":");// :을 구분문자로 분리
 				display.append(clientdata + "\r\n");
 				int cnt = cs.list.size();
 				
 				//user1에게는 user1이 입력한 대홧말 보내면 X
-				
+				display.append("\r user : " + st.nextToken());
 				//모든 클라이언트에 데이터를 전송한다.
 				for(int i = 0 ; i < cnt ; i++) {
 					ServerThread SThread = (ServerThread)cs.list.get(i);
