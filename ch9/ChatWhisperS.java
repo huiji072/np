@@ -79,6 +79,7 @@ class ServerThread extends Thread{
 	
 	private static final String SEPARATOR = "|";
 	private static final int REQ_LOGON = 1001;
+	private static final int REQ_LOGOUT = 1002;
 	private static final int REQ_SENDWORDS = 1021;
 	private static final int REQ_WISPERSEND = 1022;
 	
@@ -140,6 +141,12 @@ class ServerThread extends Thread{
 						//귓속말 메시지를 수신할 클라이어느에 전송함
 						SThread.output.write(ID + " : " + message + "\r\n");
 						SThread.output.flush();
+						break;
+					}
+					case REQ_LOGOUT : { //로그아웃 기능 추가
+						cs.list.remove(this); //로그아웃 한 클라이언트 제거
+						String ID = st.nextToken();
+						display.append("클라이언트 " + ID + "(이)가 로그아웃 하였습니다.");
 						break;
 					}
 				}

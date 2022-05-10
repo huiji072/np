@@ -17,9 +17,11 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 	StringBuffer clientdata;
 	String serverdata;
 	String ID;
+	Button logout;
 	
 	private static final String SEPARATOR = "|";
 	private static final int REQ_LOGON = 1001;
+	private static final int REQ_LOGOUT = 1002;
 	private static final int REQ_SENDWORDS = 1021;
 	private static final int REQ_WISPERSEND = 1022;
 	
@@ -36,7 +38,7 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 		
 		Panel pword = new Panel(new BorderLayout());
 		wlbl = new Label("대화말");
-		wtext = new TextField(30); //전송할 데이터를 입력하는 필드
+		wtext = new TextField(26); //전송할 데이터를 입력하는 필드
 		wtext.addKeyListener(this); //입력된 데이터를 송신하기 위한 이벤트 연결
 		pword.add(wlbl, BorderLayout.WEST);
 		pword.add(wtext, BorderLayout.EAST);
@@ -44,8 +46,12 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 		
 		Panel plabel = new Panel(new BorderLayout());
 		loglbl = new Label("로그온");
-		ltext = new TextField(30); //전송할 데이터를 입력하는 필드
+		ltext = new TextField(26); //전송할 데이터를 입력하는 필드
 		ltext.addActionListener(this); //입력된 데이터를 송신하기 위한 이벤트 연결
+		logout = new Button("로그아웃"); //로그아웃 버튼
+		logout.addActionListener(this);
+		logout.setVisible(false); //로그아웃 버튼은 초기에 안보이게 한다.
+		plabel.add(logout, BorderLayout.CENTER);
 		plabel.add(loglbl, BorderLayout.WEST);
 		plabel.add(ltext, BorderLayout.EAST);
 		ptotal.add(plabel, BorderLayout.SOUTH);
@@ -85,7 +91,9 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 		if(ID == null) {
 			ID = ltext.getText();
 			mlbl.setText(ID + "(으)로 로그인 하였습니다.");
-			
+			ltext.setVisible(false); //로그온 입력창은 사라지고
+			loglbl.setVisible(false);
+			logout.setVisible(true); //로그아웃 버튼이 보이게 한다.
 			try {
 				clientdata.setLength(0);
 				clientdata.append(REQ_LOGON);
@@ -93,8 +101,29 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 				clientdata.append(ID);
 				output.write(clientdata.toString() + "\r\n");
 				output.flush();
-				ltext.setVisible(false);
+				
 			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(ae.getSource().equals(logout)) { //로그아웃 버튼을 누르면
+			mlbl.setText("");		
+			ltext.setVisible(true); 
+			loglbl.setVisible(true); //로그인 입력창 보임
+			logout.setVisible(false); //로그아웃 버튼 안보임
+			ID = ltext.getText();
+			mlbl.setText(ID + "(이)가 로그아웃 하였습니다.");
+			try {
+				ltext.setText("");
+				clientdata.setLength(0);
+				clientdata.append(REQ_LOGOUT);
+				clientdata.append(SEPARATOR);
+				clientdata.append(ID);
+				output.write(clientdata.toString() + "\r\n");
+				output.flush();
+				ID = null;
+			}catch(IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -130,7 +159,7 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 							Wmessage = Wmessage + " " + st.nextToken();
 						}
 						clientdata.setLength(0);
-						clientdata.append(REQ_WISPERSEND);
+						clientdata.append(REQ_SENDWORDS);
 						clientdata.append(SEPARATOR);
 						clientdata.append(ID);
 						clientdata.append(SEPARATOR);
@@ -142,7 +171,7 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 						wtext.setText("");
 					}else {
 						clientdata.setLength(0);
-						clientdata.append(REQ_WISPERSEND);
+						clientdata.append(REQ_SENDWORDS);
 						clientdata.append(SEPARATOR);
 						clientdata.append(ID);
 						clientdata.append(SEPARATOR);
