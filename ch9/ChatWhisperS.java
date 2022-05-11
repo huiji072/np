@@ -111,29 +111,21 @@ class ServerThread extends Thread{
 				//로그인
 					case REQ_LOGON:{
 						String ID = st.nextToken();
-						if(cs.hash.containsKey(ID)) { //이미 있는 아이디일 때
+						if(cs.hash.containsKey(ID) == true) { //이미 있는 아이디일 때
 							display.append(ID + "는 이미 있는 아이디 입니다.\r\n"); //서버 화면에 출력
 
 							ServerThread SThread = (ServerThread)cs.hash.get(ID);
-							SThread.output.write(ID + "(은)는 중복된 아이디입니다!!!\r\n"); //클라이언트에 전송
-							SThread.output.write(REQ_LOGON_OVERLAP);
+//							SThread.output.write(ID + "(은)는 중복된 아이디입니다!!!\r\n"); //클라이언트에 전송
+//							SThread.output.write(REQ_LOGON_OVERLAP);
 							SThread.output.flush();
 							break;
-						}
-						display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
-						cs.hash.put(ID, this); //해쉬테이블에 아이디와 스레드를 저장한다.
-						break;
+						}else if(cs.hash.containsKey(ID) == false) {
+							display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
+							cs.hash.put(ID, this); //해쉬테이블에 아이디와 스레드를 저장한다.
+							break;
+						}	
 					}
-//					case REQ_LOGON_OVERLAP : {
-//						String ID = st.nextToken();
-//						if(cs.hash.containsKey(ID)) { //이미 있는 아이디일 때
-//							display.append(ID + "는 이미 있는 아이디 입니다.");
-//							ServerThread SThread = (ServerThread)cs.hash.get(ID);
-//							SThread.output.write(ID + "는 중복된 아이디 입니다!!"); //클라이언트에 전송
-//							SThread.output.flush();
-//							break;
-//						}
-//					}
+
 					//클라이언트에 전송
 					case REQ_SENDWORDS : {
 						String ID = st.nextToken();
@@ -167,7 +159,7 @@ class ServerThread extends Thread{
 					case REQ_LOGOUT : { //로그아웃 기능 추가
 						cs.list.remove(this); //로그아웃 한 클라이언트 제거
 						String ID = st.nextToken();
-						display.append("클라이언트 " + ID + "(이)가 로그아웃 하였습니다.");
+						display.append("클라이언트 " + ID + "(이)가 로그아웃 하였습니다.\r\n");
 						break;
 					}
 				}

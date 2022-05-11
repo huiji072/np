@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.List;
 
 public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 	
@@ -18,6 +19,7 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 	String serverdata;
 	String ID;
 	Button logout;
+	List<String> lid = new ArrayList<>(); 
 	
 	private static final String SEPARATOR = "|";
 	private static final int REQ_LOGON = 1001;
@@ -82,19 +84,6 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 				display.append(serverdata + "\r\n");
 				//다시 서버에 보내기
 				output.flush();
-				
-				StringTokenizer st = new StringTokenizer(serverdata, SEPARATOR);
-	            int command = Integer.parseInt(st.nextToken());
-	            
-	            switch(command) {
-	            //중복된 아이디일 떄 클라이언트에서의 처리
-	            	case REQ_LOGON_OVERLAP : {
-	            		String ID = st.nextToken();
-	            		mlbl.setText(ID + "(은)는 중복된 아이디 입니다!!!\r\n");
-	            		ltext.setText(""); //로그온 입력창 빈칸
-	            		logout.setVisible(false); //로그아웃 버튼 false
-	            	}
-	            }
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
@@ -102,8 +91,16 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 	}
 	
 	public void actionPerformed(ActionEvent ae) {
+		
 		if(ID == null) {
 			ID = ltext.getText();
+//			if(lid.contains(ID)) {
+//				mlbl.setText(ID + "(은)는 이미 있는 아이디 입니다!!!");
+//				ID = null;
+//				ltext.setVisible(true); //로그온 입력창은 보이고
+//				loglbl.setVisible(true);
+//				logout.setVisible(false); //로그아웃 버튼이 안보이게
+//			}
 			mlbl.setText(ID + "(으)로 로그인 하였습니다.");
 			ltext.setVisible(false); //로그온 입력창은 사라지고
 			loglbl.setVisible(false);
@@ -149,7 +146,20 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 	}
 	
 	class WinListener extends WindowAdapter{
-		public void windowClosing(WindowEvent e) {
+		public void windowClosing(WindowEvent e) {		
+			ID = ltext.getText();
+			mlbl.setText(ID + "(이)가 로그아웃 하였습니다.");
+			try {
+				clientdata.setLength(0);
+				clientdata.append(REQ_LOGOUT);
+				clientdata.append(SEPARATOR);
+				clientdata.append(ID);
+				output.write(clientdata.toString() + "\r\n");
+				output.flush();
+				ID = null;
+			}catch(IOException e2) {
+				e2.printStackTrace();
+			}
 			System.exit(0);
 		}
 	}
@@ -159,10 +169,21 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 		if(ke.getKeyChar() == KeyEvent.VK_ENTER) {
 			String message = wtext.getText();
 			StringTokenizer st = new StringTokenizer(message, " ");
+
 			
+			
+			lid.add(ID);
 			if(ID == null) {
 				mlbl.setText("다시 로그안 하세요!!!");
 				wtext.setText("");
+			}else if(lid.contains(ID) == true) {
+				mlbl.setText(ID + "(은)는 이미 있는 아이디 입니다!!!");
+				ID = null;
+				wtext.setText("");
+				ltext.setText("");
+				ltext.setVisible(true); //로그온 입력창은 사라지고
+				loglbl.setVisible(true);
+				logout.setVisible(false); //로그아웃 버튼이 보이게 한다.
 			}else {
 				try {
 					if(st.nextToken().equals("/w")) {
