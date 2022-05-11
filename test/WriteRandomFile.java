@@ -96,7 +96,6 @@ public class WriteRandomFile extends Frame implements ActionListener
    //Á¶È¸
    public void findRecord() {
 	   int findAccountNo = Integer.parseInt(accountField.getText());
-		
 		try {
 			while(true) {
 				output.seek((long) (findAccountNo-1) * Record.size()); 
