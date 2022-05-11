@@ -76,10 +76,12 @@ class ServerThread extends Thread{
 	String clientdata;
 	String serverdata = "";
 	ChatWhisperS cs;
+	StringBuffer data;
 	
 	private static final String SEPARATOR = "|";
 	private static final int REQ_LOGON = 1001;
 	private static final int REQ_LOGOUT = 1002;
+	private static final int REQ_LOGON_OVERLAP = 1003;
 	private static final int REQ_SENDWORDS = 1021;
 	private static final int REQ_WISPERSEND = 1022;
 	
@@ -109,10 +111,29 @@ class ServerThread extends Thread{
 				//로그인
 					case REQ_LOGON:{
 						String ID = st.nextToken();
+						if(cs.hash.containsKey(ID)) { //이미 있는 아이디일 때
+							display.append(ID + "는 이미 있는 아이디 입니다.\r\n"); //서버 화면에 출력
+
+							ServerThread SThread = (ServerThread)cs.hash.get(ID);
+							SThread.output.write(ID + "(은)는 중복된 아이디입니다!!!\r\n"); //클라이언트에 전송
+							SThread.output.write(REQ_LOGON_OVERLAP);
+							SThread.output.flush();
+							break;
+						}
 						display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
 						cs.hash.put(ID, this); //해쉬테이블에 아이디와 스레드를 저장한다.
 						break;
 					}
+//					case REQ_LOGON_OVERLAP : {
+//						String ID = st.nextToken();
+//						if(cs.hash.containsKey(ID)) { //이미 있는 아이디일 때
+//							display.append(ID + "는 이미 있는 아이디 입니다.");
+//							ServerThread SThread = (ServerThread)cs.hash.get(ID);
+//							SThread.output.write(ID + "는 중복된 아이디 입니다!!"); //클라이언트에 전송
+//							SThread.output.flush();
+//							break;
+//						}
+//					}
 					//클라이언트에 전송
 					case REQ_SENDWORDS : {
 						String ID = st.nextToken();
@@ -127,9 +148,9 @@ class ServerThread extends Thread{
 					}
 					//클라이언트에 귓속말 전송
 					case REQ_WISPERSEND : {
-						String ID = st.nextToken();
-						String WID = st.nextToken();
-						String message = st.nextToken();
+						String ID = st.nextToken(); //귓속말 발신자
+						String WID = st.nextToken(); //귓속말 수신자
+						String message = st.nextToken(); //귓속말 내용
 						display.append(ID + " -> " + WID + " : " + message + "\r\n");
 						//해쉬테이블에서 귀속말 메시지를 전송한 클라이언트의 스레드를 구함
 						ServerThread SThread = (ServerThread)cs.hash.get(ID);	
@@ -162,3 +183,4 @@ class ServerThread extends Thread{
 		}
 	}
 }
+	

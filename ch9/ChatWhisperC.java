@@ -14,7 +14,7 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 	BufferedWriter output;
 	BufferedReader input;
 	Socket client;
-	StringBuffer clientdata;
+	StringBuffer clientdata, data;
 	String serverdata;
 	String ID;
 	Button logout;
@@ -22,6 +22,7 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 	private static final String SEPARATOR = "|";
 	private static final int REQ_LOGON = 1001;
 	private static final int REQ_LOGOUT = 1002;
+	private static final int REQ_LOGON_OVERLAP = 1003;
 	private static final int REQ_SENDWORDS = 1021;
 	private static final int REQ_WISPERSEND = 1022;
 	
@@ -81,6 +82,19 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 				display.append(serverdata + "\r\n");
 				//다시 서버에 보내기
 				output.flush();
+				
+				StringTokenizer st = new StringTokenizer(serverdata, SEPARATOR);
+	            int command = Integer.parseInt(st.nextToken());
+	            
+	            switch(command) {
+	            //중복된 아이디일 떄 클라이언트에서의 처리
+	            	case REQ_LOGON_OVERLAP : {
+	            		String ID = st.nextToken();
+	            		mlbl.setText(ID + "(은)는 중복된 아이디 입니다!!!\r\n");
+	            		ltext.setText(""); //로그온 입력창 빈칸
+	            		logout.setVisible(false); //로그아웃 버튼 false
+	            	}
+	            }
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
@@ -186,7 +200,6 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 			}
 		}
 	}
-
 		public void keyReleased(KeyEvent ke) {}
 		public void keyTyped(KeyEvent ke) {}
 }
