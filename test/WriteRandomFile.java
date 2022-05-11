@@ -3,6 +3,7 @@ package test;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -171,6 +172,7 @@ class Record
    Socket client;
    BufferedReader reader;
    BufferedWriter writer;
+   List<String> list = new ArrayList<>();
 
    // RandomAccessFile로부터 한 레코드를 읽는다.
    public void read(RandomAccessFile file) throws IOException {
@@ -188,9 +190,10 @@ class Record
 		   reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		   writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 		   
+		   list.add(getAccount() +" "+ getName() + " " + getBalance());
            
-           System.out.println("\r\n" + getAccount() +" "+ getName() + " " + getBalance());
-           writer.write("\r\n" + getAccount() +" "+ getName() + " " + getBalance());
+           System.out.println(list + "\r\n");
+           writer.write(list+"\r\n");
            writer.flush();
            
 	   }catch(IOException e){

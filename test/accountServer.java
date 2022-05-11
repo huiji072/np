@@ -19,7 +19,6 @@ public class accountServer {
 					reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 					writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
 
-					System.out.println("test!!!");
 					String clientdata = reader.readLine(); //클라이언트 값을 읽어옴.
 					System.out.println(clientdata + "\r\n"); //출력
 					
