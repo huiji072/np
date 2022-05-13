@@ -77,14 +77,15 @@ class ServerThread extends Thread{
 	String serverdata = "";
 	ChatWhisperS cs;
 	StringBuffer data;
-	
+	String[] id = new String[100];
 	private static final String SEPARATOR = "|";
 	private static final int REQ_LOGON = 1001;
 	private static final int REQ_LOGOUT = 1002;
 	private static final int REQ_LOGON_OVERLAP = 1003;
 	private static final int REQ_SENDWORDS = 1021;
 	private static final int REQ_WISPERSEND = 1022;
-	
+	private Set<String> overlapID = new HashSet<String>();
+	boolean istrue = false;
 	public ServerThread(ChatWhisperS c, Socket s, TextArea ta, Label l) {
 		sock = s;
 		display = ta;
@@ -109,35 +110,38 @@ class ServerThread extends Thread{
 				
 				switch(command) {
 				//로그인
-					case REQ_LOGON:{
-						String ID = st.nextToken();
-						if(cs.hash.containsKey(ID) == true) { //이미 있는 아이디일 때
-							display.append(ID + "는 이미 있는 아이디 입니다.\r\n"); //서버 화면에 출력
-
-							ServerThread SThread = (ServerThread)cs.hash.get(ID);
-//							SThread.output.write(ID + "(은)는 중복된 아이디입니다!!!\r\n"); //클라이언트에 전송
-//							SThread.output.write(REQ_LOGON_OVERLAP);
-							SThread.output.flush();
-							break;
-						}else if(cs.hash.containsKey(ID) == false) {
-							display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
-							cs.hash.put(ID, this); //해쉬테이블에 아이디와 스레드를 저장한다.
-							break;
-						}	
-					}
-
-					//클라이언트에 전송
-					case REQ_SENDWORDS : {
-						String ID = st.nextToken();
-						String message = st.nextToken();
-						display.append(ID + " : " + message + "\r\n");
-						for(int i = 0 ; i < Lcnt ; i++) {
-							ServerThread SThread = (ServerThread)cs.list.get(i);
-							SThread.output.write(ID + " : " + message + "\r\n");
-							SThread.output.flush();
-						}
+				case REQ_LOGON:{
+					String ID = st.nextToken();
+					
+					if(cs.hash.containsKey(ID) == true) { //이미 있는 아이디일 때
+						ServerThread SThread = (ServerThread)cs.hash.get(ID);
+						display.append(ID + "는 이미 있는 아이디 입니다.\r\n"); //서버 화면에 출력
+						SThread.output.write(REQ_LOGON_OVERLAP + "\r\n"); //중복 아이디. 클라리언트로 전송
+						SThread.output.flush();
 						break;
+					}else if(cs.hash.containsKey(ID) == false) {
+						cs.list.add(this);
+						cs.hash.put(ID, this);
+						ServerThread SThread = (ServerThread)cs.hash.get(ID);
+						SThread.output.write(REQ_LOGON + "\r\n"); //로그인, 클라이언트로 전송
+						SThread.output.flush();
+						display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
+					}	
+					break;
+				}
+
+				//클라이언트에 전송
+				case REQ_SENDWORDS : {
+					String ID = st.nextToken();
+					String message = st.nextToken();
+					display.append(ID + " : " + message + "\r\n");
+					for(int i = 0 ; i < Lcnt ; i++) {
+						ServerThread SThread = (ServerThread)cs.list.get(i);
+						SThread.output.write(ID + " : " + message + "\r\n");
+						SThread.output.flush();
 					}
+					break;
+				}
 					//클라이언트에 귓속말 전송
 					case REQ_WISPERSEND : {
 						String ID = st.nextToken(); //귓속말 발신자
@@ -175,4 +179,3 @@ class ServerThread extends Thread{
 		}
 	}
 }
-	
