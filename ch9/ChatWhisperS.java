@@ -84,8 +84,6 @@ class ServerThread extends Thread{
 	private static final int REQ_LOGON_OVERLAP = 1003;
 	private static final int REQ_SENDWORDS = 1021;
 	private static final int REQ_WISPERSEND = 1022;
-	private Set<String> overlapID = new HashSet<String>();
-	boolean istrue = false;
 	public ServerThread(ChatWhisperS c, Socket s, TextArea ta, Label l) {
 		sock = s;
 		display = ta;
@@ -114,18 +112,16 @@ class ServerThread extends Thread{
 					String ID = st.nextToken();
 					
 					if(cs.hash.containsKey(ID) == true) { //이미 있는 아이디일 때
-						ServerThread SThread = (ServerThread)cs.hash.get(ID);
+//						ServerThread SThread = (ServerThread)cs.hash.get(ID);
 						display.append(ID + "는 이미 있는 아이디 입니다.\r\n"); //서버 화면에 출력
-						SThread.output.write(REQ_LOGON_OVERLAP + "\r\n"); //중복 아이디. 클라리언트로 전송
-						SThread.output.flush();
-						break;
-					}else if(cs.hash.containsKey(ID) == false) {
+						output.write(REQ_LOGON_OVERLAP + "\r\n"); //중복 아이디. 클라리언트로 전송
+						output.flush();
+					}else {
+						display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
 						cs.list.add(this);
 						cs.hash.put(ID, this);
-						ServerThread SThread = (ServerThread)cs.hash.get(ID);
-						SThread.output.write(REQ_LOGON + "\r\n"); //로그인, 클라이언트로 전송
-						SThread.output.flush();
-						display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
+						output.write(REQ_LOGON + "\r\n"); //로그인, 클라이언트로 전송
+						output.flush();
 					}	
 					break;
 				}
