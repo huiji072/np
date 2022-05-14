@@ -82,25 +82,23 @@ public class ChatWhisperC extends Frame implements ActionListener, KeyListener{
 				try {
 					//서버에서 보낸 데이터 받기
 					serverdata = input.readLine();
-		           
+		           System.out.println(serverdata);
 					st = new StringTokenizer(serverdata, " ");
-					command = Integer.parseInt(st.nextToken());
 				
-					if(command == REQ_LOGON_OVERLAP) {
+					if(serverdata == "중복된 ID입니다.") {
 						mlbl.setText("중복된 ID 입니다!!!");
 						ID = null;
 						ltext.setVisible(true); 
 						loglbl.setVisible(true);
 						logout.setVisible(false); //로그아웃 버튼이 보이게 한다.
-						break;
-					}else if(command == REQ_LOGON){
+					}else{
 						mlbl.setText(ID + "(으)로 로그인 하였습니다.");
 						ltext.setVisible(false); //로그온 입력창은 사라지고
 						loglbl.setVisible(false);
 						logout.setVisible(true); //로그아웃 버튼이 보이게 한다.
 					}
-					display.append(input.readLine() + "\r\n");
-					output.flush();
+					display.append(serverdata + "\r\n");
+//					output.flush();
 					break;
 				}catch(IOException e) {
 					e.printStackTrace();

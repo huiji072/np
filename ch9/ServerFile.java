@@ -21,7 +21,7 @@ public class ServerFile {
 		
 		try {	
 			//서버 소켓 생성
-			theServer = new ServerSocket(port);
+			theServer = new ServerSocket(port, 100);
 			System.out.println("클라이언트의 접속 요청을 기다립니다.");
 			theSocket = theServer.accept();
 			
@@ -36,7 +36,7 @@ public class ServerFile {
 			//클라이언트의 데이터 수신
 			while((str = reader.readLine()) != null) {
 				System.out.println(str);
-				writer.write(str+'\r'+'\n'); //클라이언트에 데이터 재전송
+				writer.write(str+"\r\n"); //클라이언트에 데이터 재전송
 				writer.flush();
 			}
 			theSocket.close();

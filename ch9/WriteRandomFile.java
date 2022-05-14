@@ -76,7 +76,7 @@ public class WriteRandomFile extends Frame implements ActionListener{
 			try {
 				
 				//서버에 접속
-				theSocket = new Socket(host, port);
+				theSocket = new Socket(InetAddress.getLocalHost(), port);
 				
 				is = theSocket.getInputStream();
 				reader = new BufferedReader(new InputStreamReader(is));
@@ -95,11 +95,11 @@ public class WriteRandomFile extends Frame implements ActionListener{
 					output.seek((long) (accountNo-1) * Record.size()); 
 					data.write(output);
 					
-					while(true) {
+//					while(true) {
 						writer.write(accountNo+" "+nameField.getText()+" " + d.doubleValue()+"\r\n");
 						writer.flush();
 //						System.out.println(accountNo+"\r\n");
-					}
+//					}
 					
 				}else {
 					try {
@@ -151,9 +151,13 @@ public class WriteRandomFile extends Frame implements ActionListener{
 				output.seek((long) (findAccountNo-1) * Record.size()); 
 				data.read(output);
 				if(findAccountNo == data.getAccount()) {
-					accountField = null;
-					nameField = null;
-					balanceField = null;
+					data = null;
+					accountField.setText("");
+					nameField.setText("");
+					balanceField.setText("");
+//					accountField = null;
+//					nameField = null;
+//					balanceField = null;
                     return;
 				}
 			}
@@ -174,6 +178,10 @@ public class WriteRandomFile extends Frame implements ActionListener{
 		}
 	}
 	
+	public static void main(String[] args) {
+		WriteRandomFile client = new WriteRandomFile();
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == enter) {
@@ -187,11 +195,7 @@ public class WriteRandomFile extends Frame implements ActionListener{
 		}
 	}
 
-	public static void main(String[] args) {
-		WriteRandomFile client = new WriteRandomFile();
-		
-		
-	}
+
 
 }
 
