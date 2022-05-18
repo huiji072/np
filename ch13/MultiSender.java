@@ -5,7 +5,7 @@ import java.io.*;
 public class MultiSender
 {
    public static void main(String args[]){
-      int port = 5265;
+      int port = 9006;
       try{
          InetAddress group = InetAddress.getByName("239.255.10.10");
          System.out.println(group.getHostAddress()+" 그룹 주소 및 "+port+" 포트에 바인드된 멀티캐스트 소켓을 생성함.");
