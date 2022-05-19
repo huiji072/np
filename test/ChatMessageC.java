@@ -1,16 +1,13 @@
-package ch13;
+package test;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
+import java.util.StringTokenizer;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MultiC extends Frame implements ActionListener, KeyListener {
-	protected InetAddress group;
-	   protected int port;
-	   protected MulticastSocket socket;
-	   protected DatagramPacket outgoing, incoming;
+public class ChatMessageC extends Frame implements ActionListener, KeyListener {
+	
    TextArea display;
    TextField wtext, ltext;
    Label mlbl, wlbl, loglbl;
@@ -25,7 +22,7 @@ public class MultiC extends Frame implements ActionListener, KeyListener {
    private static final int REQ_LOGON = 1001;
    private static final int REQ_SENDWORDS = 1021;
 	
-   public MultiC() {
+   public ChatMessageC() {
       super("클라이언트");
 
       mlbl = new Label("채팅 상태를 보여줍니다.");
@@ -86,27 +83,17 @@ public class MultiC extends Frame implements ActionListener, KeyListener {
             clientdata.append(REQ_LOGON);
             clientdata.append(SEPARATOR);
             clientdata.append(ID);
-//            output.write(clientdata.toString()+"\r\n");
-//            output.flush();
-//            ltext.setVisible(false);
+            output.write(clientdata.toString()+"\r\n");
+            output.flush();
             ltext.setVisible(false);
-       	 byte[] utf = ae.getActionCommand().getBytes("UTF8");   
-  	      outgoing.setData(utf);
-  	      outgoing.setLength(utf.length);
-  	      socket.send(outgoing); // 서버로 전송
-  	      display.append(ltext.getText() + "\r\n");
-  	      
-//  	   ltext.setText(ID + " : "); // 텍스트 필드의 내용을 지운다.
          } catch(Exception e) {
             e.printStackTrace();
          }
-         
-         
       }
    }
 	
    public static void main(String args[]) {
-      MultiC c = new MultiC();
+      ChatMessageC c = new ChatMessageC();
       c.runClient();
    }
 		
