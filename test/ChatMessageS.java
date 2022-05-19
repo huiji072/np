@@ -11,26 +11,44 @@ public class ChatMessageS extends Frame {
    TextArea display;
    Label info;
    List<ServerThread> list;
-	
+   protected InetAddress group;
+   protected int port;
+   protected MulticastSocket socket;
    public ServerThread SThread;
-	
-   public ChatMessageS() {
+   protected DatagramPacket outgoing, incoming;
+   
+   public ChatMessageS(InetAddress group, int port){
       super("서버");
-      info = new Label();
-      add(info, BorderLayout.CENTER);
-      display = new TextArea("", 0, 0, TextArea.SCROLLBARS_VERTICAL_ONLY);
-      display.setEditable(false);
-      add(display, BorderLayout.SOUTH);
-      addWindowListener(new WinListener());
-      setSize(300,250);
-      setVisible(true);
+      this.group = group;
+      this.port = port;
+      initAWT();
+   }
+   
+   protected void initAWT() {
+	      info = new Label();
+	      add(info, BorderLayout.CENTER);
+	      display = new TextArea("", 0, 0, TextArea.SCROLLBARS_VERTICAL_ONLY);
+	      display.setEditable(false);
+	      add(display, BorderLayout.SOUTH);
+	      addWindowListener(new WinListener());
+	      setSize(300,250);
+	      setVisible(true);
+   }
+   
+   protected void initNet() throws IOException{
+	   socket = new MulticastSocket();
+	   socket.setTimeToLive(1);
+	   outgoing = new DatagramPacket(new byte[1], 1, group, port);
+	   incoming = new DatagramPacket(new byte[65508], 65508);
    }
 	
    public void runServer() {
       ServerSocket server;
       Socket sock;
       ServerThread SThread;
+
       try {
+          initNet();
          list = new ArrayList<ServerThread>();
          server = new ServerSocket(5000, 100);
          try {
@@ -51,8 +69,13 @@ public class ChatMessageS extends Frame {
    
    
 		
-   public static void main(String args[]) {
-      ChatMessageS s = new ChatMessageS();
+   public static void main(String args[]) throws IOException{
+	   if((args.length != 1) || (args[0].indexOf(":") < 0)) // 멀티캐스트주소:포트번호 형태로 입력을 해야함.
+	          throw new IllegalArgumentException("잘못된 멀티캐스트 주소입니다.");
+	       int idx = args[0].indexOf(":");
+	       InetAddress group = InetAddress.getByName(args[0].substring(0, idx));
+	       int port = Integer.parseInt(args[0].substring(idx+1));
+      ChatMessageS s = new ChatMessageS(group, port);
       s.runServer();
    }
 		
@@ -73,7 +96,11 @@ class ServerThread extends Thread {
    String clientdata;
    String serverdata = "";
    ChatMessageS cs;
-	
+   InetAddress group;
+   int port;
+   protected DatagramPacket outgoing, incoming;
+   MulticastSocket socket;
+   
    private static final String SEPARATOR = "|";
    private static final int REQ_LOGON = 1001;
    private static final int REQ_SENDWORDS = 1021;
@@ -84,6 +111,8 @@ class ServerThread extends Thread {
       info = l;
       cs = c;
       try {
+    	  outgoing = new DatagramPacket(new byte[1], 1, group, port);
+	      incoming = new DatagramPacket(new byte[65508], 65508);
          input = new BufferedReader(new InputStreamReader(sock.getInputStream()));
          output = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
       } catch(IOException ioe) {
@@ -94,6 +123,11 @@ class ServerThread extends Thread {
       cs.list.add(this);
       try {
          while((clientdata = input.readLine()) != null) {
+        	 
+        	 incoming.setLength(incoming.getData().length);
+        	 socket.receive(incoming);
+        	 String message = new String(incoming.getData(), 0, incoming.getLength());
+        	 
             StringTokenizer st = new StringTokenizer(clientdata, SEPARATOR);
             int command = Integer.parseInt(st.nextToken());
             int cnt = cs.list.size();
@@ -105,12 +139,14 @@ class ServerThread extends Thread {
                }
                case REQ_SENDWORDS : { // “1021|아이디|대화말”를 수신
                   String ID = st.nextToken();
-                  String message = st.nextToken();
+//                  String message = st.nextToken();
+                  
                   display.append(ID + " : " + message + "\r\n");
                   for(int i=0; i<cnt; i++) { // 모든 클라이언트에 전송
                      ServerThread SThread = (ServerThread)cs.list.get(i);
                      SThread.output.write(ID + " : " + message + "\r\n");
                      SThread.output.flush();
+                     
                   }
                   break;
                }
