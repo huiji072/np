@@ -42,26 +42,25 @@ public class ChatMessageS extends Frame {
 	   incoming = new DatagramPacket(new byte[65508], 65508);
    }
 	
-   public void runServer() {
+   public void runServer() throws IOException {
       ServerSocket server;
-      Socket sock;
+//      Socket sock;
       ServerThread SThread;
-
+//      socket = new MulticastSocket();
       try {
           initNet();
          list = new ArrayList<ServerThread>();
-         server = new ServerSocket(5000, 100);
-         try {
-            while(true) {
-               sock = server.accept();
-               SThread = new ServerThread(this, sock, display, info);
-               SThread.start();
-               info.setText(sock.getInetAddress().getHostName() + " 서버는 클라이언트와 연결됨");
-            }
-         } catch(IOException ioe) {
-            server.close();
-            ioe.printStackTrace();
-         }
+//         server = new ServerSocket(5000, 100);
+         while(true) {
+//            	incoming.setLength(incoming.getData().length);
+//	            socket.receive(incoming);
+//	            String message = new String(incoming.getData(), 0, incoming.getLength(), "UTF8");
+//               System.out.println("server : " + message);
+//	            sock = server.accept();
+		   SThread = new ServerThread(this, socket, display, info);
+		   SThread.start();
+		   info.setText("멀티캐스트 채팅 [호스트 : "+group.getHostAddress()+" , "+port+"]");
+		}
       } catch(IOException ioe) {
          ioe.printStackTrace();
       }
@@ -98,39 +97,38 @@ class ServerThread extends Thread {
    ChatMessageS cs;
    InetAddress group;
    int port;
-   protected DatagramPacket outgoing, incoming;
+   DatagramPacket outgoing, incoming;
    MulticastSocket socket;
    
    private static final String SEPARATOR = "|";
    private static final int REQ_LOGON = 1001;
    private static final int REQ_SENDWORDS = 1021;
 	
-   public ServerThread(ChatMessageS c, Socket s, TextArea ta, Label l) {
-      sock = s;
+   public ServerThread(ChatMessageS c,MulticastSocket ms, TextArea ta, Label l) {
+      socket = ms;
       display = ta;
       info = l;
       cs = c;
-      try {
-    	  outgoing = new DatagramPacket(new byte[1], 1, group, port);
-	      incoming = new DatagramPacket(new byte[65508], 65508);
-         input = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-         output = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
-      } catch(IOException ioe) {
-         ioe.printStackTrace();
-      }
+      outgoing = new DatagramPacket(new byte[1], 1, group, port);
+	  incoming = new DatagramPacket(new byte[65508], 65508);
+//         input = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+//         output = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
    }
    public void run() {
       cs.list.add(this);
       try {
-         while((clientdata = input.readLine()) != null) {
-        	 
-        	 incoming.setLength(incoming.getData().length);
-        	 socket.receive(incoming);
-        	 String message = new String(incoming.getData(), 0, incoming.getLength());
-        	 
-            StringTokenizer st = new StringTokenizer(clientdata, SEPARATOR);
+    	 
+     	 while(true) {
+     		 
+     		 incoming.setLength(incoming.getData().length);
+         	 socket.receive(incoming);
+         	 String message = new String(incoming.getData(), 0, incoming.getLength());
+             System.out.println("server : " + message);
+             
+            StringTokenizer st = new StringTokenizer(message, SEPARATOR);
             int command = Integer.parseInt(st.nextToken());
             int cnt = cs.list.size();
+            
             switch(command) {
                case REQ_LOGON : { // “1001|아이디”를 수신한 경우
                   String ID = st.nextToken();

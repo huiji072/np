@@ -126,10 +126,18 @@ public class ChatMessageC extends Frame implements ActionListener, KeyListener {
             ltext.setVisible(false);
          } catch(Exception e) {
             e.printStackTrace();
+//            handleIOException(e);
          }
       }
    }
-	
+   protected synchronized void handleIOException(IOException e){
+       try{
+          stop();
+       }catch(IOException ie){  
+          System.out.println(ie);
+       }
+ }
+   
    public static void main(String args[]) throws IOException {
 	   if((args.length != 1) || (args[0].indexOf(":") < 0)) // 멀티캐스트주소:포트번호 형태로 입력을 해야함.
 	         throw new IllegalArgumentException("잘못된 멀티캐스트 주소입니다.");
@@ -167,13 +175,15 @@ public class ChatMessageC extends Frame implements ActionListener, KeyListener {
                clientdata.append(ID);
                clientdata.append(SEPARATOR);
                clientdata.append(message);
-               output.write(clientdata.toString()+"\r\n");
-               output.flush();
+//               output.write(clientdata.toString()+"\r\n");
+//               output.flush();
+               System.out.println("client : " + clientdata);
                byte[] utf = clientdata.toString().getBytes("UTF8");
                outgoing.setData(utf);
                outgoing.setLength(utf.length);
                socket.send(outgoing);
                wtext.setText("");
+//               socket.close();
             } catch (IOException e) {
                e.printStackTrace();
             }

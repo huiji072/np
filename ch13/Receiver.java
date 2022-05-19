@@ -15,14 +15,13 @@ public class Receiver  implements Runnable, WindowListener, ActionListener
 	   protected Thread listener;
 	   protected MulticastSocket socket;
 	   protected DatagramPacket outgoing, incoming;
-	   
 	   public Receiver(InetAddress group, int port){
 	      this.group = group;
 	      this.port = port;
 	      initAWT();
 	   }
 	   protected void initAWT(){
-	      frame = new Frame("멀티캐스트 채팅 [호스트 : "+group.getHostAddress()+" , "+port+"]");
+	      frame = new Frame("멀티캐스트 채팅 클라이언트[호스트 : "+group.getHostAddress()+" , "+port+"]");
 	      frame.addWindowListener(this);
 	      output = new TextArea();
 	      output.setEditable(false);
@@ -46,7 +45,7 @@ public class Receiver  implements Runnable, WindowListener, ActionListener
 	      socket = new MulticastSocket(port);
 	      socket.setTimeToLive(1);
 	      socket.joinGroup(group); //그룹 가입
-//	      outgoing = new DatagramPacket(new byte[1], 1, group, port);
+	      outgoing = new DatagramPacket(new byte[1], 1, group, port);
 	      incoming = new DatagramPacket(new byte[65508], 65508);
 	   }
 	   public synchronized void stop() throws IOException{
@@ -90,18 +89,28 @@ public class Receiver  implements Runnable, WindowListener, ActionListener
 	   }
 	   
 	   //receive
+	   //receive
 	   public void run(){
 	      try{
 	         while(!Thread.interrupted()){
 	            incoming.setLength(incoming.getData().length);
+	            //서버 값 받기
 	            socket.receive(incoming);
 	            String message = new String(incoming.getData(), 0, incoming.getLength(), "UTF8");
+	            //클라이언트에 출력
 	            output.append(message+"\n");
+	            //서버로 재전송
+	            byte[] utf = message.getBytes("UTF8");
+		         outgoing.setData(utf);
+		         outgoing.setLength(utf.length);
+		         socket.send(outgoing);
 	         }
 	      }catch(IOException e){
 	         handleIOException(e);
 	      }
 	   }
+	   
+	   
 	   public static void main(String args[]) throws IOException{
 	      if((args.length != 1) || (args[0].indexOf(":") < 0)) // 멀티캐스트주소:포트번호 형태로 입력을 해야함.
 	         throw new IllegalArgumentException("잘못된 멀티캐스트 주소입니다.");
