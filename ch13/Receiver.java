@@ -100,10 +100,7 @@ public class Receiver  implements Runnable, WindowListener, ActionListener
 	            //클라이언트에 출력
 	            output.append(message+"\n");
 	            //서버로 재전송
-	            byte[] utf = message.getBytes("UTF8");
-		         outgoing.setData(utf);
-		         outgoing.setLength(utf.length);
-		         socket.send(outgoing);
+
 	         }
 	      }catch(IOException e){
 	         handleIOException(e);
