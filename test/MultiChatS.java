@@ -13,7 +13,13 @@ public class MultiChatS extends Frame {
    List<ServerThread> list;
    Hashtable hash;
    public ServerThread SThread;
-	
+   MulticastSocket msocket;
+   DatagramPacket outgoing, incoming;
+   String group = "239.10.1.1";
+   InetAddress ia;
+   int port = 5265;
+   byte[] data = new byte[1024];
+   DatagramSocket theSocket;
    public MultiChatS() {
       super("서버");
       info = new Label();
@@ -31,20 +37,18 @@ public class MultiChatS extends Frame {
       Socket sock;
       ServerThread SThread;
       try {
-         server = new ServerSocket(5000, 100);
+			ia = InetAddress.getByName(group);
+			theSocket = new DatagramSocket(5000);
+			outgoing = new DatagramPacket(new byte[1], 1);
+			incoming = new DatagramPacket(new byte[60000], 60000);
+			info.setText("멀티캐스트 채팅 그룹 주소 : " + group);
+			msocket = new MulticastSocket();
          hash = new Hashtable();
          list = new ArrayList<ServerThread>();
-         try {
-            while(true) {
-               sock = server.accept();
-               SThread = new ServerThread(this, sock, display, info);
-               SThread.start();
-               info.setText(sock.getInetAddress().getHostName() + " 서버는 클라이언트와 연결됨");
-            }
-         } catch(IOException ioe) {
-            server.close();
-            ioe.printStackTrace();
-         }
+         while(true) {
+		   SThread = new ServerThread(this, theSocket, display, info);
+		   SThread.start();
+		}
       } catch(IOException ioe) {
          ioe.printStackTrace();
       }
@@ -73,28 +77,35 @@ class ServerThread extends Thread {
    String clientdata;
    String serverdata = "";
    MultiChatS cs;
-	
+	MulticastSocket msocket;
+	   DatagramPacket outgoing, incoming;
+	   String group = "239.10.1.1";
+	   InetAddress ia;
+	   int port = 5265;
+	   byte[] data = new byte[1024];
+	   DatagramSocket theSocket;
    private static final String SEPARATOR = "|";
    private static final int REQ_LOGON = 1001;
    private static final int REQ_SENDWORDS = 1021;
    private static final int REQ_WISPERSEND = 1022;
    private static final int REQ_LOGOUT = 1002;
-   public ServerThread(MultiChatS c, Socket s, TextArea ta, Label l) {
-      sock = s;
+   public ServerThread(MultiChatS c, DatagramSocket s, TextArea ta, Label l) throws IOException {
+	   theSocket = s;
       display = ta;
       info = l;
       cs = c;
-      try {
-         input = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-         output = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
-      } catch(IOException ioe) {
-         ioe.printStackTrace();
-      }
+      outgoing = new DatagramPacket(new byte[1], 1);
+		incoming = new DatagramPacket(new byte[60000], 60000);
    }
    public void run() {
       try {
          cs.list.add(this);
-         while((clientdata = input.readLine()) != null) {
+         while((clientdata = incoming.toString()) != null) {
+        	 incoming.setLength(incoming.getData().length);
+        	 theSocket.receive(incoming);
+        	 clientdata = new String(incoming.getData(), 0, incoming.getLength());
+        	 
+        	 
             StringTokenizer st = new StringTokenizer(clientdata, SEPARATOR);
             int command = Integer.parseInt(st.nextToken());
             int Lcnt = cs.list.size();
@@ -110,16 +121,24 @@ class ServerThread extends Thread {
 					}
                   display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
                   cs.hash.put(ID, this); // 해쉬 테이블에 아이디와 스레드를 저장한다
+
+                  
                   break;
                }
                case REQ_SENDWORDS : {
                   String ID = st.nextToken();
                   String message = st.nextToken();
+                  
                   display.append(ID + " : " + message + "\r\n");
                   for(int i=0; i<Lcnt; i++) {
                      ServerThread SThread = (ServerThread)cs.list.get(i);
-                     SThread.output.write(ID + " : " + message + "\r\n");
-                     SThread.output.flush();
+                     String sdata = ID + " : " + message + "\r\n";
+                     data = new String(sdata).getBytes();
+                     outgoing.setData(data);
+                     outgoing.setLength(data.length);
+                     outgoing.setAddress(ia);
+                     outgoing.setPort(port);
+                     msocket.send(outgoing);
                   }
                   break;
                }

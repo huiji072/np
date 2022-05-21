@@ -3,6 +3,9 @@ package test;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
+import test.MulC.ClientThread;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -18,7 +21,13 @@ StringBuffer clientdata;
 String serverdata = "";
 String ID;
 Button logout;
-	
+MulticastSocket msocket;
+DatagramPacket outgoing, incoming;
+InetAddress group;
+int port = 5265;
+byte[] data = new byte[1024];
+DatagramSocket theSocket;
+public ClientThread CThread;
 private static final String SEPARATOR = "|";
 private static final int REQ_LOGON = 1001;
 private static final int REQ_SENDWORDS = 1021;
@@ -65,12 +74,14 @@ public MultiChatC() {
 	
 public void runClient() {
    try {
-      client = new Socket(InetAddress.getLocalHost(), 5000);
+	   
       mlbl.setText("연결된 서버이름 : " + client.getInetAddress().getHostName());
-      input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-      output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
       clientdata = new StringBuffer(2048);
       mlbl.setText("접속 완료 사용할 아이디를 입력하세요.");
+      theSocket = new DatagramSocket();
+      outgoing = new DatagramPacket(new byte[1], 1, InetAddress.getLocalHost(), 5000);
+		incoming = new DatagramPacket(new byte[60000], 60000);
+    		  
       while(true) {
          serverdata = input.readLine();
          display.append(serverdata+"\r\n");
@@ -108,8 +119,24 @@ public void actionPerformed(ActionEvent ae){
          clientdata.append(REQ_LOGON);
          clientdata.append(SEPARATOR);
          clientdata.append(ID);
-         output.write(clientdata.toString()+"\r\n");
-         output.flush();
+         data = new String(clientdata).getBytes();
+         outgoing.setData(data);
+         outgoing.setLength(data.length);
+         theSocket.send(outgoing);
+         
+         theSocket.receive(incoming);
+         String address = new String(incoming.getData(), 0, incoming.getLength());
+			StringTokenizer st = new StringTokenizer(address, SEPARATOR);
+			String address_g = st.nextToken();
+			address_g = address_g.replace("/", "");
+			group = InetAddress.getByName(address_g);
+			port = Integer.parseInt(st.nextToken());
+			
+			MulticastSocket msocket = new MulticastSocket(port);
+			msocket.joinGroup(group);
+			
+			CThread = new ClientThread(msocket);
+			CThread.start();
 
       } catch(Exception e) {
          e.printStackTrace();
@@ -130,8 +157,10 @@ public void actionPerformed(ActionEvent ae){
 			clientdata.append(REQ_LOGOUT);
 			clientdata.append(SEPARATOR);
 			clientdata.append(ID);
-			output.write(clientdata.toString() + "\r\n");
-			output.flush();
+			 data = new String(clientdata).getBytes();
+	         outgoing.setData(data);
+	         outgoing.setLength(data.length);
+	         theSocket.send(outgoing);
 			ID = null;
 		}catch(IOException e) {
 			e.printStackTrace();
@@ -149,8 +178,10 @@ class WinListener extends WindowAdapter {
 			clientdata.append(REQ_LOGOUT);
 			clientdata.append(SEPARATOR);
 			clientdata.append(ID);
-			output.write(clientdata.toString() + "\r\n");
-			output.flush();
+			 data = new String(clientdata).getBytes();
+	         outgoing.setData(data);
+	         outgoing.setLength(data.length);
+	         theSocket.send(outgoing);
 			ID = null;
 		}catch(IOException e2) {
 			e2.printStackTrace();
@@ -174,8 +205,10 @@ public void keyPressed(KeyEvent ke) {
              clientdata.append(ID);
              clientdata.append(SEPARATOR);
              clientdata.append(message);
-             output.write(clientdata.toString()+"\r\n");
-             output.flush();
+             data = new String(clientdata).getBytes();
+             outgoing.setData(data);
+             outgoing.setLength(data.length);
+             theSocket.send(outgoing);
              wtext.setText("");
           } catch (IOException e) {
              e.printStackTrace();
@@ -188,5 +221,25 @@ public void keyReleased(KeyEvent ke) {
 }
 
 public void keyTyped(KeyEvent ke) {
+}
+class ClientThread extends Thread {
+	MulticastSocket mssocket;
+
+	public ClientThread(MulticastSocket ms) {
+		mssocket = ms;
+	}
+
+	public void run() {
+		try {
+			while (!Thread.interrupted()) {
+				incoming.setLength(incoming.getData().length);
+				mssocket.receive(incoming);
+				String message = new String(incoming.getData(), 0, incoming.getLength());
+				display.append(message);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
 }
