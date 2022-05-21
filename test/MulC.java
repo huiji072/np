@@ -94,7 +94,6 @@ public class MulC extends Frame implements ActionListener, KeyListener {
 					clientdata.append(REQ_LOGON);
 					clientdata.append(SEPARATOR);
 					clientdata.append(ID);
-					clientdata.append(SEPARATOR);
 					clientdata.append("로그인 하였습니다.\r\n");
 					data = new String(clientdata).getBytes();
 					odp.setData(data);

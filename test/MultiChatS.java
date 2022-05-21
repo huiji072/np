@@ -101,7 +101,7 @@ class ServerThread extends Thread {
    public void run() {
       try {
          cs.list.add(this);
-         while((clientdata = incoming.toString()) != null) {
+         while(true) {
         	 incoming.setLength(incoming.getData().length);
         	 theSocket.receive(incoming);
         	 clientdata = new String(incoming.getData(), 0, incoming.getLength());
@@ -121,8 +121,8 @@ class ServerThread extends Thread {
 						data = new String(sdata).getBytes();
 						outgoing.setData(data);
 	                     outgoing.setLength(data.length);
-	                     outgoing.setAddress(ia);
-	                     outgoing.setPort(port);
+	                     outgoing.setAddress(incoming.getAddress());
+	                     outgoing.setPort(incoming.getPort());
 	                     theSocket.send(outgoing);
 						break;
 					}
@@ -133,8 +133,8 @@ class ServerThread extends Thread {
                   data = new String(sdata).getBytes();
                   outgoing.setData(data);
                   outgoing.setLength(data.length);
-                  outgoing.setAddress(ia);
-                  outgoing.setPort(port);
+                  outgoing.setAddress(incoming.getAddress());
+                  outgoing.setPort(incoming.getPort());
                   theSocket.send(outgoing);
                   display.append("클라이언트가 " + ID);
                   cs.hash.put(ID, this); // 해쉬 테이블에 아이디와 스레드를 저장한다
@@ -171,10 +171,6 @@ class ServerThread extends Thread {
          e.printStackTrace();
       }
       cs.list.remove(this);
-      try{
-         sock.close();
-      }catch(IOException ea){
-         ea.printStackTrace();
-      }
+      theSocket.close();
    }
 }

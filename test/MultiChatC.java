@@ -81,19 +81,22 @@ public void runClient() {
       theSocket = new DatagramSocket();
       outgoing = new DatagramPacket(new byte[1], 1, InetAddress.getLocalHost(), 5000);
 		incoming = new DatagramPacket(new byte[60000], 60000);
-    		  
-//      while(true) {
-//         serverdata = input.readLine();
-//         display.append(serverdata+"\r\n");
-//         output.flush();
-//         if(serverdata == "중복된 ID입니다.") {
-//				mlbl.setText("중복된 ID 입니다!!!");
-//				ltext.setText("");
-//				ID = null;
-//				logout.setVisible(false); //로그아웃 버튼이 보이지 않게
-//			}
-//
-//      }
+		MulticastSocket mssocket = new MulticastSocket(port);
+		
+		while (true) {
+			incoming.setLength(incoming.getData().length);
+			msocket.receive(incoming);
+//			theSocket.receive(incoming);
+			String message = new String(incoming.getData(), 0, incoming.getLength());
+			display.append(message);
+	         if(serverdata == "중복된 ID입니다.") {
+					mlbl.setText("중복된 ID 입니다!!!");
+					ltext.setText("");
+					ID = null;
+					logout.setVisible(false); //로그아웃 버튼이 보이지 않게
+				}
+		}
+
    } catch(IOException e) {
       e.printStackTrace();
    }
@@ -101,22 +104,23 @@ public void runClient() {
 
 
 		
+@SuppressWarnings("deprecation")
 public void actionPerformed(ActionEvent ae){
 	logout.setVisible(false); //로그아웃 버튼이 보이지 않게s
    if(ID == null) {
 //	   System.out.println(serverdata);
 	   ID = ltext.getText();
+       loglbl.setVisible(false);
+       logout.setVisible(true); //로그아웃 버튼이 보이게 한다.
+       ltext.setVisible(false);
+ 		 ltext.setText("");
       try {
-          loglbl.setVisible(false);
-          logout.setVisible(true); //로그아웃 버튼이 보이게 한다.
-          ltext.setVisible(false);
-    		 ltext.setText("");
-    		 
-         clientdata.setLength(0);
+    	  clientdata.setLength(0);
          clientdata.append(REQ_LOGON);
          clientdata.append(SEPARATOR);
          clientdata.append(ID);
          clientdata.append("로그인 하였습니다.\r\n");
+         
          data = new String(clientdata).getBytes();
          outgoing.setData(data);
          outgoing.setLength(data.length);
@@ -130,16 +134,9 @@ public void actionPerformed(ActionEvent ae){
 			group = InetAddress.getByName(address2);
 			port = Integer.parseInt(st.nextToken());
 			
-			MulticastSocket msocket = new MulticastSocket(port);
-			msocket.joinGroup(group);
-			
-			incoming.setLength(incoming.getData().length);
-			msocket.receive(incoming);
-			String message = new String(incoming.getData(), 0, incoming.getLength());
-			display.append(message);
-			
-//			CThread = new ClientThread(msocket);
-//			CThread.start();
+//			MulticastSocket msocket = new MulticastSocket(port);
+			msocket.joinGroup(group);			
+
 
       } catch(Exception e) {
          e.printStackTrace();
@@ -229,11 +226,6 @@ public void keyPressed(KeyEvent ke) {
     }
  }
 
-public void keyReleased(KeyEvent ke) {
-}
-
-public void keyTyped(KeyEvent ke) {
-}
 //class ClientThread extends Thread {
 //	MulticastSocket mssocket;
 //
@@ -248,16 +240,23 @@ public void keyTyped(KeyEvent ke) {
 //				mssocket.receive(incoming);
 //				String message = new String(incoming.getData(), 0, incoming.getLength());
 //				display.append(message);
-////		         if(serverdata == "중복된 ID입니다.") {
-////						mlbl.setText("중복된 ID 입니다!!!");
-////						ltext.setText("");
-////						ID = null;
-////						logout.setVisible(false); //로그아웃 버튼이 보이지 않게
-////					}
+//		         if(serverdata == "중복된 ID입니다.") {
+//						mlbl.setText("중복된 ID 입니다!!!");
+//						ltext.setText("");
+//						ID = null;
+//						logout.setVisible(false); //로그아웃 버튼이 보이지 않게
+//					}
 //			}
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
 //	}
 //}
+
+public void keyReleased(KeyEvent ke) {
+}
+
+public void keyTyped(KeyEvent ke) {
+}
+
 }
