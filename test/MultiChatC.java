@@ -36,7 +36,7 @@ private static final int REQ_LOGOUT = 1002;
 public MultiChatC() {
    super("클라이언트");
 
-   mlbl = new Label("채팅 상태를 보여줍니다.");
+   mlbl = new Label("멀티캐스트 채팅 서버에 가입 요청합니다.");
    add(mlbl, BorderLayout.NORTH);
 
    display = new TextArea("", 0, 0, TextArea.SCROLLBARS_VERTICAL_ONLY);
@@ -75,50 +75,48 @@ public MultiChatC() {
 public void runClient() {
    try {
 	   
-      mlbl.setText("연결된 서버이름 : " + client.getInetAddress().getHostName());
+//      mlbl.setText("연결된 서버이름 : " + client.getInetAddress().getHostName());
       clientdata = new StringBuffer(2048);
-      mlbl.setText("접속 완료 사용할 아이디를 입력하세요.");
+//      mlbl.setText("접속 완료 사용할 아이디를 입력하세요.");
       theSocket = new DatagramSocket();
       outgoing = new DatagramPacket(new byte[1], 1, InetAddress.getLocalHost(), 5000);
 		incoming = new DatagramPacket(new byte[60000], 60000);
     		  
-      while(true) {
-         serverdata = input.readLine();
-         display.append(serverdata+"\r\n");
-         output.flush();
-         if(serverdata == "중복된 ID입니다.") {
-				mlbl.setText("중복된 ID 입니다!!!");
-				ltext.setText("");
-				ID = null;
-				logout.setVisible(false); //로그아웃 버튼이 보이지 않게
-			}
-
-      }
+//      while(true) {
+//         serverdata = input.readLine();
+//         display.append(serverdata+"\r\n");
+//         output.flush();
+//         if(serverdata == "중복된 ID입니다.") {
+//				mlbl.setText("중복된 ID 입니다!!!");
+//				ltext.setText("");
+//				ID = null;
+//				logout.setVisible(false); //로그아웃 버튼이 보이지 않게
+//			}
+//
+//      }
    } catch(IOException e) {
       e.printStackTrace();
    }
 }
 
-public static void main(String args[]) {
-MultiChatC c = new MultiChatC();
-c.runClient();
-}
+
 		
 public void actionPerformed(ActionEvent ae){
 	logout.setVisible(false); //로그아웃 버튼이 보이지 않게s
    if(ID == null) {
 //	   System.out.println(serverdata);
-      ID = ltext.getText();
-      loglbl.setVisible(false);
-      logout.setVisible(true); //로그아웃 버튼이 보이게 한다.
-      ltext.setVisible(false);
-      mlbl.setText(ID + "(으)로 로그인 하였습니다.");
-		 ltext.setText("");
+	   ID = ltext.getText();
       try {
+          loglbl.setVisible(false);
+          logout.setVisible(true); //로그아웃 버튼이 보이게 한다.
+          ltext.setVisible(false);
+    		 ltext.setText("");
+    		 
          clientdata.setLength(0);
          clientdata.append(REQ_LOGON);
          clientdata.append(SEPARATOR);
          clientdata.append(ID);
+         clientdata.append("로그인 하였습니다.\r\n");
          data = new String(clientdata).getBytes();
          outgoing.setData(data);
          outgoing.setLength(data.length);
@@ -127,16 +125,21 @@ public void actionPerformed(ActionEvent ae){
          theSocket.receive(incoming);
          String address = new String(incoming.getData(), 0, incoming.getLength());
 			StringTokenizer st = new StringTokenizer(address, SEPARATOR);
-			String address_g = st.nextToken();
-			address_g = address_g.replace("/", "");
-			group = InetAddress.getByName(address_g);
+			String address2 = st.nextToken();
+			address2 = address2.replace("/", "");
+			group = InetAddress.getByName(address2);
 			port = Integer.parseInt(st.nextToken());
 			
 			MulticastSocket msocket = new MulticastSocket(port);
 			msocket.joinGroup(group);
 			
-			CThread = new ClientThread(msocket);
-			CThread.start();
+			incoming.setLength(incoming.getData().length);
+			msocket.receive(incoming);
+			String message = new String(incoming.getData(), 0, incoming.getLength());
+			display.append(message);
+			
+//			CThread = new ClientThread(msocket);
+//			CThread.start();
 
       } catch(Exception e) {
          e.printStackTrace();
@@ -168,7 +171,11 @@ public void actionPerformed(ActionEvent ae){
 	}
 }
 
-		
+public static void main(String args[]) {
+MultiChatC c = new MultiChatC();
+c.runClient();
+}
+
 class WinListener extends WindowAdapter {
    public void windowClosing(WindowEvent e){
 	   ID = ltext.getText();
@@ -195,7 +202,7 @@ public void keyPressed(KeyEvent ke) {
        String message = new String();
        message = wtext.getText();
        if (ID == null) {
-          mlbl.setText("다시 로그인 하세요!!!");
+          mlbl.setText("로그인 후 이용 하세요!!!");
           wtext.setText("");
        } else {
           try {
@@ -210,6 +217,11 @@ public void keyPressed(KeyEvent ke) {
              outgoing.setLength(data.length);
              theSocket.send(outgoing);
              wtext.setText("");
+             
+ 			incoming.setLength(incoming.getData().length);
+ 			msocket.receive(incoming);
+ 			String message1 = new String(incoming.getData(), 0, incoming.getLength());
+ 			display.append(message1);
           } catch (IOException e) {
              e.printStackTrace();
           }
@@ -222,24 +234,30 @@ public void keyReleased(KeyEvent ke) {
 
 public void keyTyped(KeyEvent ke) {
 }
-class ClientThread extends Thread {
-	MulticastSocket mssocket;
-
-	public ClientThread(MulticastSocket ms) {
-		mssocket = ms;
-	}
-
-	public void run() {
-		try {
-			while (!Thread.interrupted()) {
-				incoming.setLength(incoming.getData().length);
-				mssocket.receive(incoming);
-				String message = new String(incoming.getData(), 0, incoming.getLength());
-				display.append(message);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-}
+//class ClientThread extends Thread {
+//	MulticastSocket mssocket;
+//
+//	public ClientThread(MulticastSocket ms) {
+//		mssocket = ms;
+//	}
+//
+//	public void run() {
+//		try {
+//			while (!Thread.interrupted()) {
+//				incoming.setLength(incoming.getData().length);
+//				mssocket.receive(incoming);
+//				String message = new String(incoming.getData(), 0, incoming.getLength());
+//				display.append(message);
+////		         if(serverdata == "중복된 ID입니다.") {
+////						mlbl.setText("중복된 ID 입니다!!!");
+////						ltext.setText("");
+////						ID = null;
+////						logout.setVisible(false); //로그아웃 버튼이 보이지 않게
+////					}
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//}
 }

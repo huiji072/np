@@ -37,7 +37,7 @@ public class MultiChatS extends Frame {
       Socket sock;
       ServerThread SThread;
       try {
-			ia = InetAddress.getByName(group);
+//			ia = InetAddress.getByName(group);
 			theSocket = new DatagramSocket(5000);
 			outgoing = new DatagramPacket(new byte[1], 1);
 			incoming = new DatagramPacket(new byte[60000], 60000);
@@ -94,6 +94,7 @@ class ServerThread extends Thread {
       display = ta;
       info = l;
       cs = c;
+      ia = InetAddress.getByName(group);
       outgoing = new DatagramPacket(new byte[1], 1);
 		incoming = new DatagramPacket(new byte[60000], 60000);
    }
@@ -104,7 +105,7 @@ class ServerThread extends Thread {
         	 incoming.setLength(incoming.getData().length);
         	 theSocket.receive(incoming);
         	 clientdata = new String(incoming.getData(), 0, incoming.getLength());
-        	 
+        	 System.out.println(clientdata);
         	 
             StringTokenizer st = new StringTokenizer(clientdata, SEPARATOR);
             int command = Integer.parseInt(st.nextToken());
@@ -115,11 +116,27 @@ class ServerThread extends Thread {
                   if(cs.hash.containsKey(ID) == true) { //이미 있는 아이디일 때
 //						ServerThread SThread = (ServerThread)cs.hash.get(ID);
 						display.append(ID + "는 이미 있는 아이디 입니다.\r\n"); //서버 화면에 출력
-						output.write("중복된 ID입니다." + "\r\n"); //중복 아이디. 클라리언트로 전송
-						output.flush();
+
+						String sdata = "중복된 ID입니다." + "\r\n";
+						data = new String(sdata).getBytes();
+						outgoing.setData(data);
+	                     outgoing.setLength(data.length);
+	                     outgoing.setAddress(ia);
+	                     outgoing.setPort(port);
+	                     theSocket.send(outgoing);
 						break;
 					}
-                  display.append("클라이언트가 " + ID + "(으)로 로그인 하였습니다.\r\n");
+                  String sdata = "멀티캐스트 채팅 그룹 주소는" + ia + SEPARATOR + 
+                		  Integer.toString(port) + "입니다.\r\n";
+                  System.out.println("멀티캐스트 채팅 그룹 주소는" + ia + SEPARATOR + 
+                		  Integer.toString(port) + "입니다.\r\n");
+                  data = new String(sdata).getBytes();
+                  outgoing.setData(data);
+                  outgoing.setLength(data.length);
+                  outgoing.setAddress(ia);
+                  outgoing.setPort(port);
+                  theSocket.send(outgoing);
+                  display.append("클라이언트가 " + ID);
                   cs.hash.put(ID, this); // 해쉬 테이블에 아이디와 스레드를 저장한다
 
                   
