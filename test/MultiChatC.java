@@ -81,21 +81,23 @@ public void runClient() {
       theSocket = new DatagramSocket();
       outgoing = new DatagramPacket(new byte[1], 1, InetAddress.getLocalHost(), 5000);
 		incoming = new DatagramPacket(new byte[60000], 60000);
-		MulticastSocket mssocket = new MulticastSocket(port);
+		MulticastSocket msocket = new MulticastSocket(port);
 		
-		while (true) {
-			incoming.setLength(incoming.getData().length);
-			msocket.receive(incoming);
-//			theSocket.receive(incoming);
-			String message = new String(incoming.getData(), 0, incoming.getLength());
-			display.append(message);
-	         if(serverdata == "중복된 ID입니다.") {
-					mlbl.setText("중복된 ID 입니다!!!");
-					ltext.setText("");
-					ID = null;
-					logout.setVisible(false); //로그아웃 버튼이 보이지 않게
-				}
-		}
+//		while (true) {
+//			incoming.setData(new byte[60000]);
+//			incoming.setLength(60000);
+//			msocket.receive(incoming);
+////			theSocket.receive(incoming);
+//			String message = new String(incoming.getData(), 0, incoming.getLength());
+//			display.append(message);
+//			System.out.println("message : "+message);
+//	         if(message == "중복된 ID입니다.") {
+//					mlbl.setText("중복된 ID 입니다!!!");
+//					ltext.setText("");
+//					ID = null;
+//					logout.setVisible(false); //로그아웃 버튼이 보이지 않게
+//				}
+//		}
 
    } catch(IOException e) {
       e.printStackTrace();
@@ -127,14 +129,11 @@ public void actionPerformed(ActionEvent ae){
          theSocket.send(outgoing);
          
          theSocket.receive(incoming);
-         String address = new String(incoming.getData(), 0, incoming.getLength());
-			StringTokenizer st = new StringTokenizer(address, SEPARATOR);
-			String address2 = st.nextToken();
-			address2 = address2.replace("/", "");
-			group = InetAddress.getByName(address2);
-			port = Integer.parseInt(st.nextToken());
+         
+         CThread = ClientThread(msocket);
+         CThread.start();
 			
-//			MulticastSocket msocket = new MulticastSocket(port);
+		 msocket = new MulticastSocket(port);
 			msocket.joinGroup(group);			
 
 
@@ -157,6 +156,7 @@ public void actionPerformed(ActionEvent ae){
 			clientdata.append(REQ_LOGOUT);
 			clientdata.append(SEPARATOR);
 			clientdata.append(ID);
+			clientdata.append("로그아웃 하였습니다.\r\n");
 			 data = new String(clientdata).getBytes();
 	         outgoing.setData(data);
 	         outgoing.setLength(data.length);
@@ -166,6 +166,11 @@ public void actionPerformed(ActionEvent ae){
 			e.printStackTrace();
 		}
 	}
+}
+
+private ClientThread ClientThread(MulticastSocket msocket2) {
+	// TODO Auto-generated method stub
+	return null;
 }
 
 public static void main(String args[]) {
@@ -214,11 +219,6 @@ public void keyPressed(KeyEvent ke) {
              outgoing.setLength(data.length);
              theSocket.send(outgoing);
              wtext.setText("");
-             
- 			incoming.setLength(incoming.getData().length);
- 			msocket.receive(incoming);
- 			String message1 = new String(incoming.getData(), 0, incoming.getLength());
- 			display.append(message1);
           } catch (IOException e) {
              e.printStackTrace();
           }
@@ -226,32 +226,32 @@ public void keyPressed(KeyEvent ke) {
     }
  }
 
-//class ClientThread extends Thread {
-//	MulticastSocket mssocket;
-//
-//	public ClientThread(MulticastSocket ms) {
-//		mssocket = ms;
-//	}
-//
-//	public void run() {
-//		try {
-//			while (!Thread.interrupted()) {
-//				incoming.setLength(incoming.getData().length);
-//				mssocket.receive(incoming);
-//				String message = new String(incoming.getData(), 0, incoming.getLength());
-//				display.append(message);
-//		         if(serverdata == "중복된 ID입니다.") {
-//						mlbl.setText("중복된 ID 입니다!!!");
-//						ltext.setText("");
-//						ID = null;
-//						logout.setVisible(false); //로그아웃 버튼이 보이지 않게
-//					}
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//}
+class ClientThread extends Thread {
+MulticastSocket mssocket;
+
+public ClientThread(MulticastSocket ms) {
+	mssocket = ms;
+}
+
+public void run() {
+	try {
+		while (!Thread.interrupted()) {
+			incoming.setLength(incoming.getData().length);
+			mssocket.receive(incoming);
+			String message = new String(incoming.getData(), 0, incoming.getLength());
+			display.append(message);
+	         if(serverdata == "중복된 ID입니다.") {
+					mlbl.setText("중복된 ID 입니다!!!");
+					ltext.setText("");
+					ID = null;
+					logout.setVisible(false); //로그아웃 버튼이 보이지 않게
+				}
+		}
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+}
 
 public void keyReleased(KeyEvent ke) {
 }
