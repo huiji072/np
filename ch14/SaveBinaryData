@@ -1,0 +1,54 @@
+package chapter11;
+
+import java.io.*;
+import java.net.*;
+
+public class SaveBinaryData {
+
+	public static void main(String[] args) {
+		URL u;
+		URLConnection uc;
+		
+		for(int i = 0 ; i < args.length ; i++) {
+			try {
+				u = new URL(args[i]);
+				uc = u.openConnection();
+				String ct = uc.getContentType();
+				int cl = uc.getContentLength();
+				
+				if(ct.startsWith("text/") || cl == -1) {
+					System.out.println("이건 데이터 파일이 아닙니다.");
+					return;
+				}
+				
+				InputStream is = uc.getInputStream();
+				BufferedInputStream bis =  new BufferedInputStream(is);
+				byte[] buffer = new byte[cl];
+				int byteread = 0;
+				int offset = 0;
+				while(offset < cl) {
+					byteread = bis.read(buffer, offset, buffer.length-offset);
+					if(byteread == -1) break;
+					offset = offset + byteread;
+				}
+				bis.close();
+				if(offset != cl) {
+					System.out.println("데이터를 정상적으로 읽지 않았습니다.");
+				}
+				String filename = u.getFile();
+				filename = filename.substring(filename.lastIndexOf('/')+1);
+				FileOutputStream fout = new FileOutputStream(filename);
+				fout.write(buffer);
+				fout.flush();
+				fout.close();
+			}catch(MalformedURLException e) {
+				System.out.println("입력된 URL은 잘못된 URL 입니다.");
+			}catch(IOException e) {
+				System.out.println(e);
+			}
+		}
+		
+
+	}
+
+}
