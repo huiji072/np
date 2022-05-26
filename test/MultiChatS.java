@@ -33,11 +33,9 @@ public class MultiChatS extends Frame {
    }
 	
    public void runServer() {
-      ServerSocket server;
-      Socket sock;
       ServerThread SThread;
       try {
-//			ia = InetAddress.getByName(group);
+//			ia = InetAddress.getByName("239.10.1.1");
 			theSocket = new DatagramSocket(5000);
 			outgoing = new DatagramPacket(new byte[1], 1);
 			incoming = new DatagramPacket(new byte[60000], 60000);
@@ -149,14 +147,17 @@ class ServerThread extends Thread {
                   display.append(ID + " : " + message + "\r\n");
                   for(int i=0; i<Lcnt; i++) {
                      ServerThread SThread = (ServerThread)cs.list.get(i);
-                     String sdata = ID + " : " + message + "\r\n";
-                     data = new String(sdata).getBytes();
-                     outgoing.setData(data);
-                     outgoing.setLength(data.length);
-                     outgoing.setAddress(ia);
-                     outgoing.setPort(port);
-                     msocket.send(outgoing);
+                     
+
                   }
+                  String sdata = ID + " : " + message + "\r\n";
+                  data = new String(sdata).getBytes();
+                  outgoing.setData(data);
+                  outgoing.setLength(data.length);
+                  outgoing.setAddress(ia);
+                  outgoing.setPort(port);
+                  System.out.println(sdata);
+                  msocket.send(outgoing);
                   break;
                }
                case REQ_LOGOUT : { //로그아웃 기능 추가
